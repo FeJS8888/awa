@@ -187,7 +187,7 @@ var File = {
      * @param {string} to 
      */
     copy(from,to){
-        
+    
     },
     /**
      * 
