@@ -181,9 +181,14 @@ var File = {
         Array.from(overworld.getEntities({ "name": last, "type": "file:dir" }))[0].addTag(path)
         return file
     },
+    /**
+     * 
+     * @param {string} from 
+     * @param {string} to 
+     */
     copy(from,to){
         
-    }
+    },
     /**
      * 
      * @param {string} path 
