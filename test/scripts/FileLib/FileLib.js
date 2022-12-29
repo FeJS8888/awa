@@ -4,13 +4,13 @@ function commonError() {
     log("§4未找到File根部")
 }
 var File = {
-    Root: Array.from(overworld.getEntities({ "name": "File(root)", "type": "file:dir" }))[0]
-    ,
+    Root: Array.from(overworld.getEntities({ "name": "File(root)", "type": "file:dir" }))[0],
+    currentPath: world.scoreboard.getObjective("File").getParticipants().find((find) => { return find.displayName.startsWith("currentPath->") }) == undefined ? "File(root)" : world.scoreboard.getObjective("File").getParticipants().find((find) => { return find.displayName.startsWith("currentPath->") }).displayName.substring(13),
     /**
      * 
      * @param {string} path 
      */
-    newfile(path) {
+    touch(path) {
         if (!this.inited) {
             commonError()
             return undefined
@@ -53,7 +53,7 @@ var File = {
         op.name = path
         op.type = "file:file"
         const file = Array.from(overworld.getEntities(op))[0]
-        if (file == undefined) this.newfile(path).addTag(str)
+        if (file == undefined) this.touch(path).addTag(str)
         else {
             file.getTags().forEach((tag) => { file.removeTag(tag) })
             file.addTag("protected")
@@ -76,7 +76,7 @@ var File = {
         op.name = path
         op.type = "file:file"
         const file = Array.from(overworld.getEntities(op))[0]
-        if (file == undefined) this.newfile(path).addTag(str)
+        if (file == undefined) this.touch(path).addTag(str)
         else {
             var tag = File.readFrom(path)
             file.removeTag(tag)
@@ -237,12 +237,31 @@ var File = {
     /**
      * 
      * @param {string} path 
+     */
+    cd(path){
+        if(!path.endsWith('/')){
+            log("§4非文件夹")
+            return undefined
+        }
+        if(path.startsWith('./')) path = this.currentPath + path.substring(2)
+        if(!this.exsits(path)){
+            log("§4目录不存在")
+            return undefined
+        }
+        runCommand(`scoreboard players reset "${this.currentPath}" File`)
+        runCommand(`scoreboard players set "${path}" File 1`)
+        this.currentPath = path
+        return path
+    },
+    /**
+     * 
+     * @param {string} path 
      * @param {number} tab 
      */
     list(path, tab) {
-        if (path == "File(root)") log("§eFile(root)")
+        if (tab == 1) log("§e" + path.split('/')[path.split('/').length - 2])
         else log("| ".repeat(tab - 1) + "§2" + path.split('/')[path.split('/').length - 2])
-        const all = Array.from(overworld.getEntities({ "type": "file:dir", "name": path }))[0].getTags().sort().forEach((each) => {
+        Array.from(overworld.getEntities({ "type": "file:dir", "name": path }))[0].getTags().sort().forEach((each) => {
             if (each == "protected") return
             if (each.endsWith('/')) this.list(each, tab + 1)
             else log("| ".repeat(tab) + each.split('/').pop())
