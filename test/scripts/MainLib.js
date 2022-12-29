@@ -88,4 +88,5 @@ world.events.beforeChat.subscribe((chat) => {
     // }
 })
 log("重载成功")
+log(File.currentPath)
 // if (!world.scoreboard.getObjective("BedWars")) world.scoreboard.addObjective("BedWars", "BedWars")
