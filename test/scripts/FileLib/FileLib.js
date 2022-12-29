@@ -78,9 +78,9 @@ var File = {
         const file = Array.from(overworld.getEntities(op))[0]
         if (file == undefined) this.newfile(path).addTag(str)
         else {
-            var tag = file.getTags().find((find) => { return find != "protected" })
+            var tag = File.readFrom(path)
             file.removeTag(tag)
-            tag += ((File.readFrom(path,true) == "" ? "" : "\n") + str)
+            tag += ((tag == "" ? "" : "\n") + str)
             file.addTag(tag)
         }
         log("§2写入文件成功")
