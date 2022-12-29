@@ -184,7 +184,8 @@ var File = {
         this.writeTo(toPath, total)
     },
     zip() {
-
+        str = "$~ZIP~$\n"
+        
     },
     unzip() {
 
