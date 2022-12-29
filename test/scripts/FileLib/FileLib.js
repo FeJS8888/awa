@@ -155,32 +155,36 @@ var File = {
      * @param {string} from
      * @param {string} to 
      */
-    copy(from,to){
-        this.writeTo(to,this.readFrom(from))
+    copy(from, to) {
+        if (!this.exsits(from)) log("§4未找到该文件")
+        else this.writeTo(to, this.readFrom(from))
     },
     /**
      * 
      * @param {string} from
      * @param {string} to 
      */
-    move(from,to){
-        this.copy(from,to)
-        this.delete(from)
+    move(from, to) {
+        if (!this.exsits(from)) log("§4未找到该文件")
+        else {
+            this.copy(from, to)
+            this.delete(from)
+        }
     },
     /**
      * 
      * @param  {...string} args 
      */
-    merge(toPath,...args){
+    merge(toPath, ...args) {
         var total = ""
-        args.forEach((file) =>{total += this.readFrom(file) == undefined ? "" : (this.readFrom(file) + '\n')})
+        args.forEach((file) => { total += this.readFrom(file) == undefined ? "" : (this.readFrom(file) + '\n') })
         log(args)
-        this.writeTo(toPath,total)
+        this.writeTo(toPath, total)
     },
-    zip(){
+    zip() {
 
     },
-    unzip(){
+    unzip() {
 
     },
     mkdir(path) {
