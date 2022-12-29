@@ -107,7 +107,8 @@ var File = {
         var op = {}
         op.type = "file:dir"
         op.name = "File(root)"
-        runCommand(`scoreboard players set "currentPath" File 1`)
+        runCommand(`scoreboard players set "currentPath->File(root)" File 1`)
+        this.currentPath = "File(root)"
         runCommand(`scoreboard players set "inited" File 1`)
         runCommand(`tickingarea add ${pos.x.toFixed()} ${pos.y.toFixed()} ${pos.z.toFixed()} ${pos.x.toFixed()} ${pos.y.toFixed()} ${pos.z.toFixed()} File true`)
         if (Array.from(overworld.getEntities(op)).length == 0) {
