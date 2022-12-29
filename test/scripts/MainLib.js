@@ -60,6 +60,8 @@ world.events.beforeChat.subscribe((chat) => {
         else if (op.startsWith("mkdir ")) File.mkdir(op.substring(6).endsWith('/') ? op.substring(6) : op.substring(6) + '/')
         else if (op.startsWith("read ")) File.readFrom(op.substring(5), true)
         else if (op.startsWith("delete ")) File.delete(op.substring(7))
+        else if (op.startsWith("copy ")) File.copy(op.substring(5).split('->')[0],op.substring(5).split('->')[1])
+        else if (op.startsWith("move ")) File.move(op.substring(5).split('->')[0],op.substring(5).split('->')[1])
         else if (op.startsWith("deleteLine ")) File.deleteLine(op.substring(11), 1)
         else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")
     }

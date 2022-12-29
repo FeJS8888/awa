@@ -150,7 +150,37 @@ var File = {
         old.kill()
         for (var i = 0; i < before.split('\n').length - times; ++i) if (before.split('\n')[i] != "") File.writeLine(path, before.split('\n')[i])
     },
-    clear(path) {
+    /**
+     * 
+     * @param {string} from
+     * @param {string} to 
+     */
+    copy(from,to){
+        this.writeTo(to,this.readFrom(from))
+    },
+    /**
+     * 
+     * @param {string} from
+     * @param {string} to 
+     */
+    move(from,to){
+        this.copy(from,to)
+        this.delete(from)
+    },
+    /**
+     * 
+     * @param  {...string} args 
+     */
+    merge(toPath,...args){
+        var total = ""
+        args.forEach((file) =>{total += this.readFrom(file) == undefined ? "" : (this.readFrom(file) + '\n')})
+        log(args)
+        this.writeTo(toPath,total)
+    },
+    zip(){
+
+    },
+    unzip(){
 
     },
     mkdir(path) {
@@ -180,14 +210,6 @@ var File = {
         }
         Array.from(overworld.getEntities({ "name": last, "type": "file:dir" }))[0].addTag(path)
         return file
-    },
-    /**
-     * 
-     * @param {string} from 
-     * @param {string} to 
-     */
-    copy(from,to){
-    
     },
     /**
      * 
