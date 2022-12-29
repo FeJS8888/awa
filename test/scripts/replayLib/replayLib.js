@@ -1,7 +1,7 @@
 import { Can_not_break_blocks, int, log, mc, overworld, world } from "../DefineLib/DefineLib";
 import { File } from "../FileLib/FileLib";
 
-if (!File.exsits("replay/isOpen.txt")) File.newfile("replay/isOpen.txt")
+if (!File.exsits("replay/isOpen.txt")) File.touch("replay/isOpen.txt")
 
 world.events.blockPlace.subscribe((pl) => { if (isOpen && Can_not_break_blocks.find((find) => { return "minecraft:" + find == pl.block.typeId }) == undefined) File.writeLine(`replay/place/${pl.player.name}.rep`, `${pl.block.location.x} ${pl.block.location.y} ${pl.block.location.z} ${pl.block.type.id}`) })
 world.events.blockBreak.subscribe((pl) => { if (isOpen && Can_not_break_blocks.find((find) => { return "minecraft:" + find == pl.brokenBlockPermutation.type.id }) == undefined) File.writeLine(`replay/break/${pl.player.name}.rep`, `${pl.block.location.x} ${pl.block.location.y} ${pl.block.location.z} ${pl.brokenBlockPermutation.type.id}`) })
