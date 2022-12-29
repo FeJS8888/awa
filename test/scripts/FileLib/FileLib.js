@@ -80,7 +80,7 @@ var File = {
         else {
             var tag = file.getTags().find((find) => { return find != "protected" })
             file.removeTag(tag)
-            tag += (File.readFrom(path) == "" ? "" : "\n" + str)
+            tag += ((File.readFrom(path) == "" ? "" : "\n") + str)
             file.addTag(tag)
         }
         log("§2写入文件成功")
@@ -185,7 +185,7 @@ var File = {
     },
     zip() {
         str = "$~ZIP~$\n"
-        
+
     },
     unzip() {
 
