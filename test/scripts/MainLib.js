@@ -88,5 +88,4 @@ world.events.beforeChat.subscribe((chat) => {
     }
 })
 log("KAKA")
-// File.readFrom("replay/place/FeJS8888.rep",true)
 if (!world.scoreboard.getObjective("BedWars")) world.scoreboard.addObjective("BedWars", "BedWars")
