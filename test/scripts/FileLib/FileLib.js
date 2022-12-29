@@ -228,7 +228,7 @@ var File = {
             if (isLogged) log("§4未找到该文件")
             return null
         }
-        const str = Array.from(overworld.getEntities({ "type": "file:file", "name": path }))[0].getTags().find((find) => { return find != "protected" })
+        var str = Array.from(overworld.getEntities({ "type": "file:file", "name": path }))[0].getTags().find((find) => { return find != "protected" })
         str = str == undefined ? "" : str
         if (isLogged) log(`§e=========§r §2${path} §e=========§r\n` + str + `\n§e=========§r §1EOF§r §e=========§r`)
         return str
