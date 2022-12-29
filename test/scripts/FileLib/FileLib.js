@@ -5,7 +5,7 @@ function commonError() {
 }
 var File = {
     Root: Array.from(overworld.getEntities({ "name": "File(root)", "type": "file:dir" }))[0],
-    currentPath: world.scoreboard.getObjective("File") ? world.scoreboard.getObjective("File").getParticipants().find((find) => { return find.displayName.startsWith("currentPath->") }) == undefined ? "File(root)" : world.scoreboard.getObjective("File").getParticipants().find((find) => { return find.displayName.startsWith("currentPath->") }).displayName.substring(13) : undefined,
+    currentPath: world.scoreboard.getObjective("File") != undefined ? world.scoreboard.getObjective("File").getParticipants().find((find) => { return find.displayName.startsWith("currentPath->") }) == undefined ? "File(root)" : world.scoreboard.getObjective("File").getParticipants().find((find) => { return find.displayName.startsWith("currentPath->") }).displayName.substring(13) : undefined,
     /**
      * 
      * @param {string} path 
