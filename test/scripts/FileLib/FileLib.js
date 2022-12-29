@@ -252,8 +252,8 @@ var File = {
             log("§4目录不存在")
             return undefined
         }
-        runCommand(`scoreboard players reset "${this.currentPath}" File`)
-        runCommand(`scoreboard players set "${path}" File 1`)
+        runCommand(`scoreboard players reset "currentPath->${this.currentPath}" File`)
+        runCommand(`scoreboard players set "currentPath->${path}" File 1`)
         this.currentPath = path
         log("§2成功切换到" + path)
         return path
