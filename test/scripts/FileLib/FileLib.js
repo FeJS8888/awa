@@ -260,8 +260,9 @@ var File = {
      * @param {string} path 
      * @param {number} tab 
      */
-    list(path, tab) {
-        if (tab == 1) log("§e" + path.split('/')[path.split('/').length - 2])
+    list(path, tab) { 
+        if(path == "File(root)") log("§eFile(root)")
+        else if (tab == 1) log("§e" + path.split('/')[path.split('/').length - 2])
         else log("| ".repeat(tab - 1) + "§2" + path.split('/')[path.split('/').length - 2])
         Array.from(overworld.getEntities({ "type": "file:dir", "name": path }))[0].getTags().sort().forEach((each) => {
             if (each == "protected") return
