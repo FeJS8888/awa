@@ -84,5 +84,5 @@ world.events.beforeChat.subscribe((chat) => {
     }
 })
 log("KAKA")
-// File.writeTo("dir/file.file", "awa")
+File.readFrom("a",true)
 if (!world.scoreboard.getObjective("BedWars")) world.scoreboard.addObjective("BedWars", "BedWars")
