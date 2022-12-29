@@ -37,6 +37,7 @@ var File = {
             last = str
         }
         Array.from(overworld.getEntities({ "name": last, "type": "file:dir" }))[0].addTag(path)
+        log("§2创建文件成功")
         return file
     },
     /**
@@ -218,6 +219,7 @@ var File = {
             last = str
         }
         Array.from(overworld.getEntities({ "name": last, "type": "file:dir" }))[0].addTag(path)
+        log("§2创建文件夹成功")
         return file
     },
     /**
@@ -253,6 +255,7 @@ var File = {
         runCommand(`scoreboard players reset "${this.currentPath}" File`)
         runCommand(`scoreboard players set "${path}" File 1`)
         this.currentPath = path
+        log("§2成功切换到" + path)
         return path
     },
     /**
