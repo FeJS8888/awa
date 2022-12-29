@@ -165,6 +165,8 @@ var File = {
      * @param {string} to 
      */
     move(from, to) {
+        log(from)
+        log(to)
         if (!this.exsits(from)) log("§4未找到该文件")
         else {
             this.copy(from, to)
