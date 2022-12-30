@@ -149,13 +149,19 @@ var File = {
     deleteLine(path, times) {
         const before = File.readFrom(path)
         const old = Array.from(overworld.getEntities({ "name": path, "type": "file:file" }))[0]
-        old.removeTag("protected")
-        old.kill()
-        for (var i = 0; i < before.split('\n').length - times; ++i) if (before.split('\n')[i] != "") File.writeLine(path, before.split('\n')[i])
+        if(old == undefined){
+            log("§4未找到该文件")
+            return null
+        }
+        old.removeTag(old.getTags().find((find) =>{return find != "protected"}))
+        var str = ""        
+        for (var i = 0; i < before.split('\n').length - times; ++i) str += before.split('\n')[i]
+        old.addTag(str)
+        log("§2写入文件成功")
     },
     /**
      * 
-     * @param {string} from
+     * @param {string} from 
      * @param {string} to 
      */
     copy(from, to) {
@@ -248,6 +254,13 @@ var File = {
             return undefined
         }
         if(path.startsWith('./')) path = this.currentPath + path.substring(2)
+        else if(path.startsWith('../')){
+            if(this.currentPath == "File(root)"){
+                log("§4无法返回上级目录")
+                return null
+            }
+            path = this.currentPath.substring(0, this.currentPath.length - (this.currentPath.split('/')[this.currentPath.split('/').length - 2].length + 1))
+        }
         if(!this.exsits(path)){
             log("§4目录不存在")
             return undefined

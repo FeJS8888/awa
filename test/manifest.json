@@ -1,9 +1,9 @@
 {
     "format_version": 2,
     "header": {
-        "description": "pack.description",
-        "name": "pack.name",
-        "uuid": "d699fd38-7db7-4e90-87e5-6849268d01ce",
+        "description": "文件系统_Test",
+        "name": "文件系统",
+        "uuid": "d699fdf8-7db7-4e90-87e5-68d9268d01ce",
         "min_engine_version": [
             1,
             16,
@@ -18,7 +18,7 @@
     "modules": [
         {
             "type": "script",
-            "uuid": "e2e645e3-324a-4ab0-bb29-92a89d3b6a3f",
+            "uuid": "e2e645e3-324a-4ab0-bbf9-9da89d3b6a3f",
             "version": [
                 1,
                 0,
@@ -28,7 +28,7 @@
         },
         {
             "type": "data",
-            "uuid": "e2e645f3-324a-4ab0-bb29-92a89d3b6a3f",
+            "uuid": "e2e64ff3-324a-4ab0-bb29-92ad9d3b6a3f",
             "version": [
                 1,
                 0,
