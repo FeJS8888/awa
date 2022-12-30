@@ -1,0 +1,45 @@
+{
+    "format_version": 2,
+    "header": {
+        "description": "文件系统-混淆版.mcaddon",
+        "name": "文件系统-混淆版.mcaddon",
+        "uuid": "d699fdf8-7df7-4e90-87e5-6849268d01ce",
+        "min_engine_version": [
+            1,
+            16,
+            0
+        ],
+        "version": [
+            1,
+            0,
+            0
+        ]
+    },
+    "modules": [
+        {
+            "type": "script",
+            "uuid": "e2e645e3-324b-4ab0-bbf9-92a89d3b6a3f",
+            "version": [
+                1,
+                0,
+                0
+            ],
+            "entry": "scripts/MainLib.js"
+        },
+        {
+            "type": "data",
+            "uuid": "e2e64ff3-324a-bab0-bb29-92a89d3b6a3f",
+            "version": [
+                1,
+                0,
+                0
+            ]
+        }
+    ],
+    "dependencies": [
+        {
+            "module_name": "@minecraft/server",
+            "version": "1.0.0-beta"
+        }
+    ]
+}
