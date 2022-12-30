@@ -1,7 +1,8 @@
 import { replayPlace, replayBreak, replayOpen, replayClose } from "./replayLib/replayLib"
-import { world, overworld, runCommand, log, mc } from "./DefineLib/DefineLib"
-import { BlockLocation, BlockType, MinecraftBlockTypes } from "@minecraft/server"
+import {  overworld, runCommand, log, mc } from "./DefineLib/DefineLib"
+import { BlockLocation, BlockType, MinecraftBlockTypes, system } from "@minecraft/server"
 import { Can_not_break_blocks, Can_not_explode_blocks, int, getScore } from "./DefineLib/DefineLib"
+import tick from "./server-plus/tick"
 import { File } from "./FileLib/FileLib"
 import { BedWars } from "./BedWarsLib/BedWarsLib"
 world.events.beforeExplosion.subscribe((exp) => {
@@ -61,11 +62,11 @@ world.events.beforeChat.subscribe((chat) => {
         else if (op.startsWith("mkdir ")) File.mkdir((File.currentPath != "File(root)" ? File.currentPath : "") + (op.substring(6).endsWith('/') ? op.substring(6) : op.substring(6) + '/'))
         else if (op.startsWith("touch ")) File.touch((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(6)).addTag("")
         else if (op.startsWith("read ")) File.readFrom((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(5), true)
-        else if (op.startsWith("delete ")) File.delete((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(7),true)
-        else if (op.startsWith("copy ")) File.copy((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(5).split('->')[0],(File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(5).split('->')[1])
-        else if (op.startsWith("cp ")) File.copy((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(3).split('->')[0],(File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(3).split('->')[1])
-        else if (op.startsWith("move ")) File.move((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(5).split('->')[0],(File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(5).split('->')[1])
-        else if (op.startsWith("mv ")) File.move((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(3).split('->')[0],(File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(3).split('->')[1])
+        else if (op.startsWith("delete ")) File.delete((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(7), true)
+        else if (op.startsWith("copy ")) File.copy((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(5).split('->')[0], (File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(5).split('->')[1])
+        else if (op.startsWith("cp ")) File.copy((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(3).split('->')[0], (File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(3).split('->')[1])
+        else if (op.startsWith("move ")) File.move((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(5).split('->')[0], (File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(5).split('->')[1])
+        else if (op.startsWith("mv ")) File.move((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(3).split('->')[0], (File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(3).split('->')[1])
         else if (op.startsWith("cd ")) File.cd(op.substring(3))
         else if (op.startsWith("deleteLine ")) File.deleteLine((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(11), 1)
         else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")
@@ -83,6 +84,8 @@ world.events.beforeChat.subscribe((chat) => {
         chat.cancel = true
         const op = chat.message.substring(8)
         if (op == "init") BedWars.init(chat.sender.location)
+        else if (op == "inithub") BedWars.inithub(chat.sender.location)
+        else if (op == "hub") BedWars.hub(chat.sender.name)
         else if (op == "Preload") BedWars.Preload()
         else if (op.startsWith("addPreloadCmd->")) BedWars.addPreloadCmd(op.substring(15))
         else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")

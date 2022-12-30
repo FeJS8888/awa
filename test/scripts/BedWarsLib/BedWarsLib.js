@@ -1,4 +1,4 @@
-import { log, mc, int, overworld, runCommand, world } from "../DefineLib/DefineLib"
+import { log, mc, int, overworld, runCommand, world, getScore } from "../DefineLib/DefineLib"
 import { File } from "../FileLib/FileLib"
 
 var BedWars = {
@@ -24,22 +24,43 @@ var BedWars = {
      * @param {mc.Vector3} pos 
      */
     init(pos) {
-        File.writeTo("BedWars/MapLocs/1-1.map", `${pos.x.toFixed()} ${pos.y.toFixed()} ${pos.z.toFixed()}`)
+        File.writeTo("BedWars/MapLocs/1-1.map", `${Math.floor(pos.x)} ${Math.floor(pos.y) + 1} ${Math.floor(pos.z)}`)
         log("§2初始化成功")
     },
     Preload() {
-        File.readFrom("BedWars/PreloadCmd/1-1.cmdconfig").split('\n').forEach((cmd) => { log(cmd);runCommand(cmd)})
+        File.readFrom("BedWars/PreloadCmd/1-1.cmdconfig").split('\n').forEach((cmd) => { log(cmd); runCommand(cmd) })
         log("OK")
     },
     /**
      * 
      * @param {string} cmd 
      */
-    addPreloadCmd(cmd){
-        File.writeLine("BedWars/PreloadCmd/1-1.cmdconfig",cmd)
+    addPreloadCmd(cmd) {
+        File.writeLine("BedWars/PreloadCmd/1-1.cmdconfig", cmd)
         log("OK")
+    },
+    inithub(pos) {
+        File.writeTo("BedWars/lobby/location.pos", `${Math.floor(pos.x)} ${Math.floor(pos.y) + 1} ${Math.floor(pos.z)}`)
+        log("§2初始化成功")
+    },
+    /**
+     * 
+     * @param {string} who 
+     */
+    hub(who) {
+        const pos = File.readFrom("BedWars/lobby/location.pos").split(' ')
+        const x = getScore("tp_x", who) != undefined ? getScore("tp_x", who) : int(pos[0])
+        const y = getScore("tp_y", who) != undefined ? getScore("tp_y", who) : int(pos[1])
+        const z = getScore("tp_z", who) != undefined ? getScore("tp_z", who) : int(pos[2])
+        const player = Array.from(world.getPlayers({ "name": who }))[0]
+        player.teleport(new mc.Vector(x, y, z), overworld, 0, 90)
+        player.nameTag = player.name
     }
 }
+world.events.playerJoin.subscribe((join) => {
+    BedWars.hub(join.playerName)
+})
+// BedWars.hub("FeJS8888")
 if (!world.scoreboard.getObjective("BedWars")) world.scoreboard.addObjective("BedWars", "BedWars")
 
 export { BedWars }

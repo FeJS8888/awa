@@ -108,7 +108,8 @@ const Can_not_explode_blocks = {
 }
 const int = parseInt
 function getScore(Obj, Name) {
-    return world.scoreboard.getObjective(Obj).getParticipants().find((find) => { return find.displayName == Name }) == undefined ? undefined : world.scoreboard.getObjective(Obj).getScore(world.scoreboard.getObjective(Obj).getParticipants().find((find) => { return find.displayName == Name }))
+    return world.scoreboard.getObjective(Obj) == undefined ? undefined : world.scoreboard.getObjective(Obj).getParticipants().find((find) => { return find.displayName == Name }) == undefined ? undefined : world.scoreboard.getObjective(Obj).getScore(world.scoreboard.getObjective(Obj).getParticipants().find((find) => { return find.displayName == Name }))
 }
+world.events.itemUseOn.subscribe((on) => { if (on.item.typeId == "minecraft:stick" && on.item.data == 32767) overworld.getBlock(on.blockLocation).setType(mc.MinecraftBlockTypes.air) })
 
-export { dx, dy, dz, Can_not_break_blocks, Can_not_explode_blocks, int, getScore, mc, world, overworld, runCommand ,log}
+export { dx, dy, dz, Can_not_break_blocks, Can_not_explode_blocks, int, getScore, mc, world, overworld, runCommand, log }
