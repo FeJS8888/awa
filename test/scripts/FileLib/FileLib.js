@@ -127,19 +127,20 @@ var File = {
     /**
      * 
      * @param {string} path 
+     * @param {boolean | undefined} isLogged
      */
-    delete(path) {
-        log(path)
+    delete(path,isLogged) {
+        isLogged = isLogged == undefined ? false : isLogged
         const file = Array.from(overworld.getEntities({ "name": path, "type": path.endsWith('/') ? "file:dir" : "file:file" }))[0]
         if (!file) {
-            log("§4未找到该文件")
+            if(isLogged) log("§4未找到该文件")
             return null
         }
         if (path.endsWith('/')) file.getTags().forEach((each) => { if (!(each == "protected")) this.delete(each) })
         Array.from(overworld.getEntities({ "name": path.endsWith('/') && path.split('/').length == 2 || !path.endsWith('/') && path.split('/').length == 1 ? "File(root)" : path.substring(0, path.length - path.split('/').pop().length), "type": "file:dir" }))[0].removeTag(path)
         file.removeTag("protected")
         file.kill()
-        log("§4删除文件成功")
+        if(isLogged) log("§4删除文件成功")
     },
     /**
      * 
@@ -149,12 +150,12 @@ var File = {
     deleteLine(path, times) {
         const before = File.readFrom(path)
         const old = Array.from(overworld.getEntities({ "name": path, "type": "file:file" }))[0]
-        if(old == undefined){
+        if (old == undefined) {
             log("§4未找到该文件")
             return null
         }
-        old.removeTag(old.getTags().find((find) =>{return find != "protected"}))
-        var str = ""        
+        old.removeTag(old.getTags().find((find) => { return find != "protected" }))
+        var str = ""
         for (var i = 0; i < before.split('\n').length - times; ++i) str += before.split('\n')[i]
         old.addTag(str)
         log("§2写入文件成功")
@@ -248,22 +249,29 @@ var File = {
      * 
      * @param {string} path 
      */
-    cd(path){
-        if(!path.endsWith('/')){
-            log("§4非文件夹")
-            return undefined
-        }
-        if(path.startsWith('./')) path = this.currentPath + path.substring(2)
-        else if(path.startsWith('../')){
-            if(this.currentPath == "File(root)"){
-                log("§4无法返回上级目录")
-                return null
+    cd(path) {
+        if (path != "File(root)") {
+            if(!path.endsWith('/')) path += '/'
+            if (!path.endsWith('/')) {
+                log("§4非文件夹")
+                return undefined
             }
-            path = this.currentPath.substring(0, this.currentPath.length - (this.currentPath.split('/')[this.currentPath.split('/').length - 2].length + 1))
-        }
-        if(!this.exsits(path)){
-            log("§4目录不存在")
-            return undefined
+            if (path.startsWith('./')) {
+                path = (this.currentPath != "File(root)" ? this.currentPath : "") + path.substring(2)
+            }
+            else if (path.startsWith('../')) {
+                if (this.currentPath == "File(root)") {
+                    log("§4无法返回上级目录")
+                    return undefined
+                }
+                path = this.currentPath.substring(0, this.currentPath.length - (this.currentPath.split('/')[this.currentPath.split('/').length - 2].length + 1)) + '/'
+                if (path == '/') path = "File(root)"
+            }
+            log(path)
+            if (!this.exsits(path) && path != "File(root)") {
+                log("§4目录不存在")
+                return undefined
+            }
         }
         runCommand(`scoreboard players reset "currentPath->${this.currentPath}" File`)
         runCommand(`scoreboard players set "currentPath->${path}" File 1`)
@@ -276,8 +284,8 @@ var File = {
      * @param {string} path 
      * @param {number} tab 
      */
-    list(path, tab) { 
-        if(path == "File(root)") log("§eFile(root)")
+    list(path, tab) {
+        if (path == "File(root)") log("§eFile(root)")
         else if (tab == 1) log("§e" + path.split('/')[path.split('/').length - 2])
         else log("| ".repeat(tab - 1) + "§2" + path.split('/')[path.split('/').length - 2])
         Array.from(overworld.getEntities({ "type": "file:dir", "name": path }))[0].getTags().sort().forEach((each) => {
