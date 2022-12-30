@@ -40,5 +40,6 @@ var BedWars = {
         log("OK")
     }
 }
+if (!world.scoreboard.getObjective("BedWars")) world.scoreboard.addObjective("BedWars", "BedWars")
 
 export { BedWars }

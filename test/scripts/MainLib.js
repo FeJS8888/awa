@@ -1,9 +1,9 @@
-// import { replayPlace, replayBreak, replayOpen, replayClose } from "./replayLib/replayLib"
+import { replayPlace, replayBreak, replayOpen, replayClose } from "./replayLib/replayLib"
 import { world, overworld, runCommand, log, mc } from "./DefineLib/DefineLib"
 import { BlockLocation, BlockType, MinecraftBlockTypes } from "@minecraft/server"
 import { Can_not_break_blocks, Can_not_explode_blocks, int, getScore } from "./DefineLib/DefineLib"
 import { File } from "./FileLib/FileLib"
-// import { BedWars } from "./BedWarsLib/BedWarsLib"
+import { BedWars } from "./BedWarsLib/BedWarsLib"
 world.events.beforeExplosion.subscribe((exp) => {
     exp.cancel = true
     // var queue = []
@@ -29,17 +29,17 @@ world.events.beforeExplosion.subscribe((exp) => {
     log(exp.impactedBlocks.length.toString())
 })
 
-// world.events.blockPlace.subscribe(place => {
-//     if (place.block.type.id == "minecraft:tnt") {
-//         place.block.setType(mc.MinecraftBlockTypes.air)
-//         overworld.spawnEntity("minecraft:tnt", place.block.location)
-//     }
-// })
-// world.events.blockBreak.subscribe((br) => {
-//     if (Can_not_break_blocks.find((find) => { return "minecraft:" + find == br.brokenBlockPermutation.type.id })) {
-//         br.block.setPermutation(br.brokenBlockPermutation)
-//     }
-// })
+world.events.blockPlace.subscribe(place => {
+    if (place.block.type.id == "minecraft:tnt") {
+        place.block.setType(mc.MinecraftBlockTypes.air)
+        overworld.spawnEntity("minecraft:tnt", place.block.location)
+    }
+})
+world.events.blockBreak.subscribe((br) => {
+    if (Can_not_break_blocks.find((find) => { return "minecraft:" + find == br.brokenBlockPermutation.type.id })) {
+        br.block.setPermutation(br.brokenBlockPermutation)
+    }
+})
 
 world.events.itemUse.subscribe((item) => {
     if (item.item.typeId == "minecraft:compass") {
@@ -70,24 +70,22 @@ world.events.beforeChat.subscribe((chat) => {
         else if (op.startsWith("deleteLine ")) File.deleteLine((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(11), 1)
         else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")
     }
-    // if (chat.message.startsWith("replay ")) {
-    //     chat.cancel = true
-    //     const op = chat.message.substring(7)
-    //     if (op.startsWith("break ")) replayBreak(op.substring(6))
-    //     else if (op.startsWith("place ")) replayPlace(op.substring(6))
-    //     else if (op == "open") replayOpen()
-    //     else if (op == "close") replayClose()
-    //     else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")
-    // }
-    // if (chat.message.startsWith("bedwars.")) {
-    //     chat.cancel = true
-    //     const op = chat.message.substring(8)
-    //     if (op == "init") BedWars.init(chat.sender.location)
-    //     else if (op == "Preload") BedWars.Preload()
-    //     else if (op.startsWith("addPreloadCmd->")) BedWars.addPreloadCmd(op.substring(15))
-    //     else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")
-    // }
+    if (chat.message.startsWith("replay ")) {
+        chat.cancel = true
+        const op = chat.message.substring(7)
+        if (op.startsWith("break ")) replayBreak(op.substring(6))
+        else if (op.startsWith("place ")) replayPlace(op.substring(6))
+        else if (op == "open") replayOpen()
+        else if (op == "close") replayClose()
+        else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")
+    }
+    if (chat.message.startsWith("bedwars.")) {
+        chat.cancel = true
+        const op = chat.message.substring(8)
+        if (op == "init") BedWars.init(chat.sender.location)
+        else if (op == "Preload") BedWars.Preload()
+        else if (op.startsWith("addPreloadCmd->")) BedWars.addPreloadCmd(op.substring(15))
+        else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")
+    }
 })
 log("重载成功")
-log(File.currentPath)
-// if (!world.scoreboard.getObjective("BedWars")) world.scoreboard.addObjective("BedWars", "BedWars")

@@ -267,7 +267,6 @@ var File = {
                 path = this.currentPath.substring(0, this.currentPath.length - (this.currentPath.split('/')[this.currentPath.split('/').length - 2].length + 1)) + '/'
                 if (path == '/') path = "File(root)"
             }
-            log(path)
             if (!this.exsits(path) && path != "File(root)") {
                 log("§4目录不存在")
                 return undefined
