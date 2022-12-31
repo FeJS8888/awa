@@ -1,8 +1,6 @@
-import { replayPlace, replayBreak, replayOpen, replayClose } from "./replayLib/replayLib"
-import {  overworld, runCommand, log, mc } from "./DefineLib/DefineLib"
-import { BlockLocation, BlockType, MinecraftBlockTypes, system } from "@minecraft/server"
-import { Can_not_break_blocks, Can_not_explode_blocks, int, getScore } from "./DefineLib/DefineLib"
-import tick from "./server-plus/tick"
+import { replay } from "./replayLib/replayLib"
+import { world, overworld, runCommand, log, mc } from "./DefineLib/DefineLib"
+import { Can_not_break_blocks, Can_not_explode_blocks } from "./DefineLib/DefineLib"
 import { File } from "./FileLib/FileLib"
 import { BedWars } from "./BedWarsLib/BedWarsLib"
 world.events.beforeExplosion.subscribe((exp) => {
@@ -68,16 +66,17 @@ world.events.beforeChat.subscribe((chat) => {
         else if (op.startsWith("move ")) File.move((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(5).split('->')[0], (File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(5).split('->')[1])
         else if (op.startsWith("mv ")) File.move((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(3).split('->')[0], (File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(3).split('->')[1])
         else if (op.startsWith("cd ")) File.cd(op.substring(3))
+        else if (op == "help") File.help()
         else if (op.startsWith("deleteLine ")) File.deleteLine((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(11), 1)
         else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")
     }
     if (chat.message.startsWith("replay ")) {
         chat.cancel = true
         const op = chat.message.substring(7)
-        if (op.startsWith("break ")) replayBreak(op.substring(6))
-        else if (op.startsWith("place ")) replayPlace(op.substring(6))
-        else if (op == "open") replayOpen()
-        else if (op == "close") replayClose()
+        if (op.startsWith("break ")) replay.replayBreak(op.substring(6))
+        else if (op.startsWith("place ")) replay.replayPlace(op.substring(6))
+        else if (op == "open") replay.replayOpen()
+        else if (op == "close") replay.replayClose()
         else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")
     }
     if (chat.message.startsWith("bedwars.")) {

@@ -11,6 +11,13 @@ function runCommand(cmd) {
 }
 /**
  * 
+ * @param {mc.Vector3} vector 
+ */
+function toLocation(vector){
+    return new mc.Location(vector.x,vector.y,vector.z)
+}
+/**
+ * 
  * @param {string} str 
  */
 function log(str) {
@@ -112,4 +119,4 @@ function getScore(Obj, Name) {
 }
 world.events.itemUseOn.subscribe((on) => { if (on.item.typeId == "minecraft:stick" && on.item.data == 32767) overworld.getBlock(on.blockLocation).setType(mc.MinecraftBlockTypes.air) })
 
-export { dx, dy, dz, Can_not_break_blocks, Can_not_explode_blocks, int, getScore, mc, world, overworld, runCommand, log }
+export { dx, dy, dz, Can_not_break_blocks, Can_not_explode_blocks, int, getScore, mc, world, overworld, runCommand, log,toLocation }

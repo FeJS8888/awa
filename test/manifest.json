@@ -1,7 +1,7 @@
 {
     "format_version": 2,
     "header": {
-        "description": "文件系统_Test",
+        "description": "文件系统_Test——Developing",
         "name": "文件系统",
         "uuid": "d699fdf8-7db7-4e90-87e5-68d9268d01ce",
         "min_engine_version": [
@@ -39,7 +39,7 @@
     "dependencies": [
         {
             "module_name": "@minecraft/server",
-            "version": "1.0.0-beta"
+            "version": "1.1.0-beta"
         }
     ]
 }

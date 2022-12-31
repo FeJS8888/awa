@@ -1,5 +1,7 @@
 import { log, mc, int, overworld, runCommand, world, getScore } from "../DefineLib/DefineLib"
 import { File } from "../FileLib/FileLib"
+import tick from "../server-plus/tick"
+import playerJoined from "../server-plus/playerJoined"
 
 var BedWars = {
     /**
@@ -57,10 +59,16 @@ var BedWars = {
         player.nameTag = player.name
     }
 }
-world.events.playerJoin.subscribe((join) => {
-    BedWars.hub(join.playerName)
+world.events.playerJoin.subscribe((join) => { File.delete(`players/${join.playerName}.txt`) })
+tick.subscribe(() => {
+    if(!File.inited || !File.exsits("BedWars/lobby/location.pos")) return
+    Array.from(world.getPlayers()).forEach((each) => {
+        if (!File.exsits(`players/${each.name}.txt`)) {
+            BedWars.hub(each.name)
+            File.touch(`players/${each.name}.txt`)
+        }
+    })
 })
-// BedWars.hub("FeJS8888")
 if (!world.scoreboard.getObjective("BedWars")) world.scoreboard.addObjective("BedWars", "BedWars")
 
 export { BedWars }

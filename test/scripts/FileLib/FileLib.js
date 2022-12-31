@@ -1,5 +1,5 @@
 import { world } from "@minecraft/server"
-import { getScore, log, mc, overworld, runCommand } from "../DefineLib/DefineLib"
+import { getScore, log, mc, overworld, runCommand, toLocation } from "../DefineLib/DefineLib"
 function commonError() {
     log("§4未找到File根部")
 }
@@ -113,7 +113,7 @@ var File = {
         runCommand(`scoreboard players set "inited" File 1`)
         runCommand(`tickingarea add ${pos.x.toFixed()} ${pos.y.toFixed()} ${pos.z.toFixed()} ${pos.x.toFixed()} ${pos.y.toFixed()} ${pos.z.toFixed()} File true`)
         if (Array.from(overworld.getEntities(op)).length == 0) {
-            var root = overworld.spawnEntity("file:dir", pos)
+            var root = overworld.spawnEntity("file:dir", toLocation(pos))
             root.nameTag = "File(root)"
             root.addTag("protected")
         }
@@ -129,18 +129,18 @@ var File = {
      * @param {string} path 
      * @param {boolean | undefined} isLogged
      */
-    delete(path,isLogged) {
+    delete(path, isLogged) {
         isLogged = isLogged == undefined ? false : isLogged
         const file = Array.from(overworld.getEntities({ "name": path, "type": path.endsWith('/') ? "file:dir" : "file:file" }))[0]
         if (!file) {
-            if(isLogged) log("§4未找到该文件")
+            if (isLogged) log("§4未找到该文件")
             return null
         }
         if (path.endsWith('/')) file.getTags().forEach((each) => { if (!(each == "protected")) this.delete(each) })
         Array.from(overworld.getEntities({ "name": path.endsWith('/') && path.split('/').length == 2 || !path.endsWith('/') && path.split('/').length == 1 ? "File(root)" : path.substring(0, path.length - path.split('/').pop().length), "type": "file:dir" }))[0].removeTag(path)
         file.removeTag("protected")
         file.kill()
-        if(isLogged) log("§4删除文件成功")
+        if (isLogged) log("§4删除文件成功")
     },
     /**
      * 
@@ -251,7 +251,7 @@ var File = {
      */
     cd(path) {
         if (path != "File(root)") {
-            if(!path.endsWith('/')) path += '/'
+            if (!path.endsWith('/')) path += '/'
             if (!path.endsWith('/')) {
                 log("§4非文件夹")
                 return undefined
@@ -300,6 +300,24 @@ var File = {
     exsits(path) {
         return !path.endsWith('/') ? Array.from(overworld.getEntities({ "name": path, "type": "file:file" })).length == 1 : Array.from(overworld.getEntities({ "name": path, "type": "file:dir" })).length == 1
     },
+    help() {
+        ["File.uninit | File.init : 初始化函数,任何操作之前必须执行过初始化,不然会报错",
+            "File.writeTo | File.writeLine : 写入文件",
+            "File.read : 读取文件内容",
+            "File.ls | File.list : 列出当前目录下所有文件",
+            "File.cd : 切换目录",
+            "File.touch : 新建文件",
+            "File.mkdir : 新建文件夹",
+            "File.cp : 复制文件",
+            "File.mv : 移动文件",
+            "File.inited : 是否已初始化",
+            "File.currentPath : 当前目录",
+            "File.merge : 合并文件",
+            "File.delete : 删除文件",
+            "File.deleteLine : 删除某个文件末尾一行"].forEach((tip) => {
+                log("§2" + tip)
+            })
+    },
     inited: world.scoreboard.getObjective("File") == undefined ? false : getScore("File", "inited") == undefined ? false : true
 }
 world.events.entityHurt.subscribe((hurt) => {
@@ -309,4 +327,5 @@ world.events.entityHurt.subscribe((hurt) => {
         newfile.nameTag = hurt.hurtEntity.nameTag
     }
 })
+
 export { File }
