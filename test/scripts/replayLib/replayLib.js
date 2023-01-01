@@ -90,7 +90,7 @@ var replay = {
         File.delete(`replay/Logger/cache/${order}.cache`)
         log(`§2撤回成功`)
     },
-    clearcache() { File.delete(`replay/Logger/cache/`); File.writeTo("replay/Logger/currentOrder.config", 0); this.currentOrder = 0;log("§2清除成功") },
+    clearcache() { File.delete(`replay/Logger/cache/`); File.writeTo("replay/Logger/currentOrder.config", '0'); this.currentOrder = 0;log("§2清除成功") },
     isOpen: int(File.readFrom("replay/isOpen.config")) != 0,
     isLogged: int(File.readFrom("replay/isLogged.config")) != 0,
     currentOrder: File.readFrom("replay/Logger/currentOrder.config") == null ? 0 : int(File.readFrom("replay/Logger/currentOrder.config"))
