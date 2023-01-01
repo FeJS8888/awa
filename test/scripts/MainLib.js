@@ -1,5 +1,5 @@
 import { replay } from "./replayLib/replayLib"
-import { world, overworld, runCommand, log, mc } from "./DefineLib/DefineLib"
+import { world, overworld, runCommand, log, mc, int } from "./DefineLib/DefineLib"
 import { Can_not_break_blocks, Can_not_explode_blocks } from "./DefineLib/DefineLib"
 import { File } from "./FileLib/FileLib"
 import { BedWars } from "./BedWarsLib/BedWarsLib"
@@ -70,11 +70,13 @@ world.events.beforeChat.subscribe((chat) => {
         else if (op.startsWith("deleteLine ")) File.deleteLine((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(11), 1)
         else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")
     }
-    if (chat.message.startsWith("replay ")) {
+    if (chat.message.startsWith("replay.")) {
         chat.cancel = true
         const op = chat.message.substring(7)
         if (op.startsWith("break ")) replay.replayBreak(op.substring(6))
         else if (op.startsWith("place ")) replay.replayPlace(op.substring(6))
+        else if (op.startsWith("cancel ")) replay.cancel(int(op.substring(7)))
+        else if (op.startsWith("run ")) replay[op.substring(4)] != undefined ? log(replay[op.substring(4)].toString()) : replay[op.substring(4)]() != undefined ? replay[op.substring(4)]() : log("§4执行命令失败(未找到命令)")
         else if (op == "open") replay.replayOpen()
         else if (op == "close") replay.replayClose()
         else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")
