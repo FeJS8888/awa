@@ -29,6 +29,7 @@ var replay = {
             this.currentOrder++
             File.writeTo("replay/Logger/currentOrder.config", this.currentOrder.toString())
             log(`§2回放成功${count}条记录`)
+            log("§2cache创建成功,新的cache位于" + `§ereplay/Logger/cache/${this.currentOrder - 1}.cache`)
         }
     },
     /**
@@ -89,7 +90,7 @@ var replay = {
         File.delete(`replay/Logger/cache/${order}.cache`)
         log(`§2撤回成功`)
     },
-    clearcache() { File.delete(`replay/Logger/cache/`) },
+    clearcache() { File.delete(`replay/Logger/cache/`); File.writeTo("replay/Logger/currentOrder.config", 0); this.currentOrder = 0;log("§2清除成功") },
     isOpen: int(File.readFrom("replay/isOpen.config")) != 0,
     isLogged: int(File.readFrom("replay/isLogged.config")) != 0,
     currentOrder: File.readFrom("replay/Logger/currentOrder.config") == null ? 0 : int(File.readFrom("replay/Logger/currentOrder.config"))

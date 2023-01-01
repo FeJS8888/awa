@@ -9,10 +9,12 @@ var File = {
     /**
      * 
      * @param {string} path 
+     * @param {boolean | undefined} isLogged
      */
-    touch(path) {
+    touch(path, isLogged) {
+        isLogged = isLogged == undefined ? false : isLogged
         if (!this.inited) {
-            commonError()
+            if (isLogged) commonError()
             return undefined
         }
         const x = getScore("File", "x")
@@ -37,17 +39,19 @@ var File = {
             last = str
         }
         Array.from(overworld.getEntities({ "name": last, "type": "file:dir" }))[0].addTag(path)
-        log("§2创建文件成功")
+        if (isLogged) log("§2创建文件成功")
         return file
     },
     /**
      * 
      * @param {string} path 
      * @param {string} str 
+     * @param {boolean | undefined} isLogged
      */
-    writeTo(path, str) {
+    writeTo(path, str, isLogged) {
+        isLogged = isLogged == undefined ? false : isLogged
         if (!this.inited) {
-            commonError()
+            if (isLogged) commonError()
             return undefined
         }
         var op = {}
@@ -60,17 +64,19 @@ var File = {
             file.addTag("protected")
             file.addTag(str)
         }
-        log("§2写入文件成功")
+        if (isLogged) log("§2写入文件成功")
         return path
     },
     /**
     * 
     * @param {string} path 
     * @param {string} str 
+     * @param {boolean | undefined} isLogged
     */
-    writeLine(path, str) {
+    writeLine(path, str, isLogged) {
+        isLogged = isLogged == undefined ? false : isLogged
         if (!this.inited) {
-            commonError()
+            if (isLogged) commonError()
             return undefined
         }
         var op = {}
@@ -84,7 +90,7 @@ var File = {
             tag += ((tag == "" ? "" : "\n") + str)
             file.addTag(tag)
         }
-        log("§2写入文件成功")
+        if (isLogged) log("§2写入文件成功")
         return path
     },
     /**
@@ -175,8 +181,6 @@ var File = {
      * @param {string} to 
      */
     move(from, to) {
-        log(from)
-        log(to)
         if (!this.exsits(from)) log("§4未找到该文件")
         else {
             this.copy(from, to)
@@ -252,10 +256,6 @@ var File = {
     cd(path) {
         if (path != "File(root)") {
             if (!path.endsWith('/')) path += '/'
-            if (!path.endsWith('/')) {
-                log("§4非文件夹")
-                return undefined
-            }
             if (path.startsWith('./')) {
                 path = (this.currentPath != "File(root)" ? this.currentPath : "") + path.substring(2)
             }
@@ -264,7 +264,8 @@ var File = {
                     log("§4无法返回上级目录")
                     return undefined
                 }
-                path = this.currentPath.substring(0, this.currentPath.length - (this.currentPath.split('/')[this.currentPath.split('/').length - 2].length + 1)) + '/'
+                path = this.currentPath.substring(0, this.currentPath.length - (this.currentPath.split('/')[this.currentPath.split('/').length - 2].length + 1))
+                if (!path.endsWith('/')) path += '/'
                 if (path == '/') path = "File(root)"
             }
             if (!this.exsits(path) && path != "File(root)") {
