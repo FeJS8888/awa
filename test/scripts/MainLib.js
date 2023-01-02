@@ -68,6 +68,7 @@ world.events.beforeChat.subscribe((chat) => {
         else if (op.startsWith("run ")) (File[op.split(' ')[1]] != undefined) ? (typeof File[op.split(' ')[1]] != 'function') ? log(File[op.split(' ')[1]].toString()) : File[op.split(' ')[1]](...op.substring(4 + op.substring(4).split(' ')[0].length + 1).split(' ')) : log("§4执行命令失败(未找到命令)")
         else if (op.startsWith("cd ")) File.cd(op.substring(3))
         else if (op == "help") File.help()
+        else if (op == "version") log(File.version)
         else if (op.startsWith("deleteLine ")) File.deleteLine((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(11), 1)
         else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")
     }
@@ -80,6 +81,7 @@ world.events.beforeChat.subscribe((chat) => {
         else if (op.startsWith("run ")) replay[op.split(' ')[1]] != undefined ? (typeof replay[op.split(' ')[1]] != 'function') ? log(replay[op.split(' ')[1]].toString()) : replay[op.split(' ')[1]](...op.substring(4 + op.substring(4).split(' ')[0].length + 1).split(' ')) : log("§4执行命令失败(未找到命令)")
         else if (op == "open") replay.replayOpen()
         else if (op == "close") replay.replayClose()
+        else if (op == "help") replay.help()
         else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")
     }
     if (chat.message.startsWith("bedwars.")) {

@@ -7,6 +7,7 @@ world.events.blockPlace.subscribe((pl) => { if (replay.isOpen/* && Can_not_break
 world.events.blockBreak.subscribe((pl) => { if (replay.isOpen/* && Can_not_break_blocks.find((find) => { return "minecraft:" + find == pl.brokenBlockPermutation.type.id }) == undefined*/) { var total = ""; const all = pl.brokenBlockPermutation.getAllProperties(); all.forEach((each, index) => { total += (each.name + "->" + each.value + ((index < all.length - 1) ? ";" : "")) }); File.writeLine(`replay/break/${pl.player.name}.rep`, `${pl.block.location.x} ${pl.block.location.y} ${pl.block.location.z} ${pl.brokenBlockPermutation.type.id} ${total}`) } })
 
 var replay = {
+    version : "V0.0.1",
     /**
     * 
     * @param {string} who 
@@ -101,13 +102,28 @@ var replay = {
     },
     help() {
         ["====================================================================================",
-            "Fe回放系统V0.0.1 --- Base : Fe文件系统V0.0.1",
+            `Fe回放系统${this.version} --- Base : Fe文件系统${File.version}`,
             "请注意 : 在V1.0.0一下的版本均为测试版,请勿用于正式生产环境,如需使用,请做好地图备份",
+            "基础功能 :",
+            "replay.open : 开启回放记录",
+            "replay.close : 关闭回放记录",
+            "replay.place 玩家名 : 撤回该玩家的放置方块行为",
+            "replay.break 玩家名 : 撤回该玩家的破坏方块行为",
+            "replay.cancel cache序号 : 撤回该序号的回放记录",
+            "进阶功能 :",
+            "replay.run : 执行replay库中任意方法/属性",
+            "例如 :",
+            "replay.run isOpen : 查询回放系统是否开启",
+            "replay.run clearcache : 清除已删除的记录(将会导致无法撤销回放操作)",
+            "replay.run currentOrder : 查询下一个cache的序号",
+            "replay.run LoggerOpen : 开启cache记录",
+            "replay.run LoggerClose : 关闭cache记录",
+            "replay.run isLogged : 查询是否开启cache记录",
             "===================================================================================="
         ].forEach((tip) => {
             var color_format = "§2"
             if (tip == "====================================================================================") color_format = "§1§l"
-            else if (tip == "Fe回放系统V0.0.1 --- Base : Fe文件系统V0.0.1") color_format = "§e§l"
+            else if (tip == `Fe回放系统${this.version} --- Base : Fe文件系统${File.version}`) color_format = "§e§l"
             else if (tip == "请注意 : 在V1.0.0一下的版本均为测试版,请勿用于正式生产环境,如需使用,请做好地图备份") color_format = "§4§l"
             log(color_format + tip)
         })
