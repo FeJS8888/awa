@@ -143,7 +143,8 @@ var File = {
             return null
         }
         if (path.endsWith('/')) file.getTags().forEach((each) => { if (!(each == "protected")) this.delete(each) })
-        Array.from(overworld.getEntities({ "name": path.endsWith('/') && path.split('/').length == 2 || !path.endsWith('/') && path.split('/').length == 1 ? "File(root)" : path.substring(0, path.length - path.split('/').pop().length), "type": "file:dir" }))[0].removeTag(path)
+        const name = (path.endsWith('/') && path.split('/').length == 2 || !path.endsWith('/') && path.split('/').length == 1) ? "File(root)" : (path.endsWith('/') && path.split('/').length == 2 || !path.endsWith('/') && path.split('/').length == 1) ? "File(root)" : path.substring(0, path.length - path.split('/')[path.split('/').length - (path.endsWith('/') ? 2 : 1)].length - (path.endsWith('/') ? 1 : 0))
+        Array.from(overworld.getEntities({ "name": name, "type": "file:dir" }))[0].removeTag(path)
         file.removeTag("protected")
         file.kill()
         if (isLogged) log("§4删除文件成功")
@@ -193,8 +194,8 @@ var File = {
      */
     merge(toPath, ...args) {
         var total = ""
-        args.forEach((file) => { total += this.readFrom(file) == undefined ? "" : (this.readFrom(file) + '\n') })
-        log(args)
+        args.forEach((file, index) => { total += this.readFrom(file) == undefined ? "" : (this.readFrom(file) + ((index != args.length - 1) ? '\n' : "")) })
+        log(args.toString())
         this.writeTo(toPath, total)
     },
     zip() {
@@ -302,7 +303,9 @@ var File = {
         return !path.endsWith('/') ? Array.from(overworld.getEntities({ "name": path, "type": "file:file" })).length == 1 : Array.from(overworld.getEntities({ "name": path, "type": "file:dir" })).length == 1
     },
     help() {
-        ["File.uninit | File.init : 初始化函数,任何操作之前必须执行过初始化,不然会报错",
+        ["====================================================================================",
+            "Fe文件系统V0.0.1",
+            "File.uninit | File.init : 初始化函数,任何操作之前必须执行过初始化,不然会报错",
             "File.writeTo | File.writeLine : 写入文件",
             "File.read : 读取文件内容",
             "File.ls | File.list : 列出当前目录下所有文件",
@@ -315,15 +318,16 @@ var File = {
             "File.currentPath : 当前目录",
             "File.merge : 合并文件",
             "File.delete : 删除文件",
-            "File.deleteLine : 删除某个文件末尾一行"].forEach((tip) => {
-                log("§2" + tip)
+            "File.deleteLine : 删除某个文件末尾一行",
+            "===================================================================================="].forEach((tip) => {
+                log((({ "====================================================================================": "§1§l", "Fe文件系统V0.0.1": "§e§l" }[tip] != undefined) ? { "====================================================================================": "§1§l", "Fe文件系统V0.0.1": "§e§l" }[tip] : "§2") + tip)
             })
     },
     inited: world.scoreboard.getObjective("File") == undefined ? false : getScore("File", "inited") == undefined ? false : true
 }
 world.events.entityHurt.subscribe((hurt) => {
     if (hurt.hurtEntity.hasTag("protected")) {
-        const newfile = overworld.spawnEntity(hurt.hurtEntity.typeId, hurt.hurtEntity.location)
+        const newfile = overworld.spawnEntity(hurt.hurtEntity.typeId, toLocation(hurt.hurtEntity.location))
         hurt.hurtEntity.getTags().forEach((tag) => { newfile.addTag(tag) })
         newfile.nameTag = hurt.hurtEntity.nameTag
     }

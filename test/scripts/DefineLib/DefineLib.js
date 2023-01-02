@@ -27,7 +27,6 @@ const dx = [1, -1, 0, 0, 0, 0]
 const dy = [0, 0, 1, -1, 0, 0]
 const dz = [0, 0, 0, 0, 1, -1]
 const Can_not_break_blocks = [
-    "wool",
     "stone",
     "cobblestone",
     "stone_block_slab",
