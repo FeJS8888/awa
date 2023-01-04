@@ -5,9 +5,8 @@ if (!File.exsits("replay/isOpen.config")) File.touch("replay/isOpen.config")
 
 world.events.blockPlace.subscribe((pl) => { if (replay.isOpen/* && Can_not_break_blocks.find((find) => { return "minecraft:" + find == pl.block.typeId }) == undefined*/) { var total = ""; const all = pl.block.permutation.getAllProperties(); all.forEach((each, index) => { total += (each.name + "->" + each.value + ((index < all.length - 1) ? ";" : "")) }); File.writeLine(`replay/place/${pl.player.name}.rep`, `${pl.block.location.x} ${pl.block.location.y} ${pl.block.location.z} ${pl.block.type.id} ${total}`) } })
 world.events.blockBreak.subscribe((pl) => { if (replay.isOpen/* && Can_not_break_blocks.find((find) => { return "minecraft:" + find == pl.brokenBlockPermutation.type.id }) == undefined*/) { var total = ""; const all = pl.brokenBlockPermutation.getAllProperties(); all.forEach((each, index) => { total += (each.name + "->" + each.value + ((index < all.length - 1) ? ";" : "")) }); File.writeLine(`replay/break/${pl.player.name}.rep`, `${pl.block.location.x} ${pl.block.location.y} ${pl.block.location.z} ${pl.brokenBlockPermutation.type.id} ${total}`) } })
-
 var replay = {
-    version : "V0.0.1",
+    version: "V0.0.1",
     /**
     * 
     * @param {string} who 
@@ -44,7 +43,7 @@ var replay = {
                 if (each == "") return
                 const pos = each.split(' ')
                 var permutation = mc.MinecraftBlockTypes[pos[3].substring(10) == "command_block" ? "commandBlock" : pos[3].substring(10)].createDefaultBlockPermutation()
-                pos[4].split(';').forEach((each) => { permutation.getProperty(each.split('->')[0]).value = (each.split('->')[1] == "false" ? false : (each.split('->')[1] == "true" ? true : (int(each.split('->')[1]) != NaN ? int(each.split('->')[1]) : each.split('->')[1]))) })
+                if (pos[4].split(';') != 1) pos[4].split(';').forEach((each) => { permutation.getProperty(each.split('->')[0]).value = (each.split('->')[1] == "false" ? false : (each.split('->')[1] == "true" ? true : (int(each.split('->')[1]) != NaN ? int(each.split('->')[1]) : each.split('->')[1]))) })
                 overworld.getBlock(new mc.BlockLocation(int(pos[0]), int(pos[1]), int(pos[2]))).trySetPermutation(permutation)
                 count++
             })
@@ -92,7 +91,7 @@ var replay = {
             const pos = each.split(' ')
             if (type == "place") {
                 var permutation = mc.MinecraftBlockTypes[pos[3].substring(10)].createDefaultBlockPermutation()
-                pos[4].split(';').forEach((each) => { permutation.getProperty(each.split('->')[0]).value = each.split('->')[1] })
+                if (pos[4].split(';') != 1) pos[4].split(';').forEach((each) => { permutation.getProperty(each.split('->')[0]).value = each.split('->')[1] })
                 overworld.getBlock(new mc.BlockLocation(int(pos[0]), int(pos[1]), int(pos[2]))).trySetPermutation(permutation)
             }
             else overworld.getBlock(new mc.BlockLocation(int(pos[0]), int(pos[1]), int(pos[2]))).setPermutation(mc.MinecraftBlockTypes.air.createDefaultBlockPermutation())

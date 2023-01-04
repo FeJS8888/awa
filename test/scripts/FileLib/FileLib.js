@@ -327,6 +327,29 @@ var File = {
                 log(color_format + tip)
             })
     },
+    debug() {
+        if (!this.inited) {
+            log("§4未初始化")
+            return 0
+        }
+        var nobug = true
+        var all = {}
+        Array.from(overworld.getEntities({ "type": "file:file" })).forEach((each) => { all[each.nameTag] = ((all[each.nameTag] == undefined) ? 1 : all[each.nameTag] + 1) })
+        for (var i in all) if (all[i] != 1) {
+            log("§4发现§e" + all[i] + "§4份同一位置的§e" + i + "§4文件,已删除多余文件")
+            runCommand(`kill @e[type = file:file,name = "${i}",c = ${all[i] - 1}]`)
+            nobug = false
+        }
+        var all2 = {}
+        Array.from(overworld.getEntities({ "type": "file:dir" })).forEach((each) => { all2[each.nameTag] = ((all2[each.nameTag] == undefined) ? 1 : all2[each.nameTag] + 1) })
+        for (var i in all2) if (all2[i] != 1) {
+            log("§4发现§e" + all2[i] + "§4份同一位置的§e" + i + "§4文件夹,已删除多余文件夹")
+            runCommand(`kill @e[type = file:dir,name = "${i}“,c = ${all[i] - 1}]`)
+            nobug = false
+        }
+        if(nobug) log("§2未找到bug,如仍无法使用,请联系FeJS8888 - §eQQ3270208782")
+        return 1
+    },
     inited: world.scoreboard.getObjective("File") == undefined ? false : getScore("File", "inited") == undefined ? false : true
 }
 world.events.entityHurt.subscribe((hurt) => {
