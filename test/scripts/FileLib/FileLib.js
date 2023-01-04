@@ -4,7 +4,7 @@ function commonError() {
     log("§4未找到File根部")
 }
 var File = {
-    version : "V0.0.1",
+    version: "V0.0.1",
     Root: Array.from(overworld.getEntities({ "name": "File(root)", "type": "file:dir" }))[0],
     currentPath: world.scoreboard.getObjective("File") != undefined ? world.scoreboard.getObjective("File").getParticipants().find((find) => { return find.displayName.startsWith("currentPath->") }) == undefined ? "File(root)" : world.scoreboard.getObjective("File").getParticipants().find((find) => { return find.displayName.startsWith("currentPath->") }).displayName.substring(13) : undefined,
     /**
@@ -321,7 +321,10 @@ var File = {
             "File.delete : 删除文件",
             "File.deleteLine : 删除某个文件末尾一行",
             "===================================================================================="].forEach((tip) => {
-                log((({ "====================================================================================": "§1§l", "Fe文件系统" + : "§e§l" }[tip] != undefined) ? { "====================================================================================": "§1§l", "Fe文件系统V0.0.1": "§e§l" }[tip] : "§2") + tip)
+                var color_format = "§2"
+                if (tip == "====================================================================================") color_format = "§1§l"
+                else if (tip == "Fe文件系统" + this.version) color_format = "§e§l"
+                log(color_format + tip)
             })
     },
     inited: world.scoreboard.getObjective("File") == undefined ? false : getScore("File", "inited") == undefined ? false : true
