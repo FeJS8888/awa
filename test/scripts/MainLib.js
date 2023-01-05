@@ -28,23 +28,23 @@ world.events.beforeExplosion.subscribe((exp) => {
     log(exp.impactedBlocks.length.toString())
 })
 
-// world.events.blockPlace.subscribe(place => {
-//     if (place.block.type.id == "minecraft:tnt") {
-//         place.block.setType(mc.MinecraftBlockTypes.air)
-//         overworld.spawnEntity("minecraft:tnt", place.block.location)
-//     }
-// })
-// world.events.blockBreak.subscribe((br) => {
-//     if (Can_not_break_blocks.find((find) => { return "minecraft:" + find == br.brokenBlockPermutation.type.id })) {
-//         br.block.setPermutation(br.brokenBlockPermutation)
-//     }
-// })
+world.events.blockPlace.subscribe(place => {
+    if (place.block.type.id == "minecraft:tnt") {
+        place.block.setType(mc.MinecraftBlockTypes.air)
+        overworld.spawnEntity("minecraft:tnt", place.block.location)
+    }
+})
+world.events.blockBreak.subscribe((br) => {
+    if (Can_not_break_blocks.find((find) => { return "minecraft:" + find == br.brokenBlockPermutation.type.id })) {
+        br.block.setPermutation(br.brokenBlockPermutation)
+    }
+})
 
-// world.events.itemUse.subscribe((item) => {
-//     if (item.item.typeId == "minecraft:compass") {
-//         BedWars.JoinMap(item.source)
-//     }
-// })
+world.events.itemUse.subscribe((item) => {
+    if (item.item.typeId == "minecraft:compass") {
+        BedWars.JoinMap(item.source)
+    }
+})
 
 world.events.beforeChat.subscribe((chat) => {
     if (chat.message.startsWith("File.")) {

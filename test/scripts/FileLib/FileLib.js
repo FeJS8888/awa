@@ -299,6 +299,16 @@ var File = {
     /**
      * 
      * @param {string} path 
+     * @param {string} opinionString
+     */
+    filter(path,opinionString){
+        const str = ""
+        this.readFrom(path).split('\n').forEach((each) =>{if(each != opinionString) str += (((str == "") ? "" : "\n") + each)})
+        this.writeTo(path,str)
+    },
+    /**
+     * 
+     * @param {string} path 
      */
     exsits(path) {
         return !path.endsWith('/') ? Array.from(overworld.getEntities({ "name": path, "type": "file:file" })).length == 1 : Array.from(overworld.getEntities({ "name": path, "type": "file:dir" })).length == 1

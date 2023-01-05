@@ -1,3 +1,0 @@
-\structures\
-\.AddCompLib\
-\server-plus\

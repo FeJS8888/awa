@@ -1,7 +1,5 @@
-import { Can_not_break_blocks, int, log, mc, overworld, world } from "../DefineLib/DefineLib";
+import { Can_not_break_blocks, int, log, mc, overworld, text_redirect, world } from "../DefineLib/DefineLib";
 import { File } from "../FileLib/FileLib";
-
-if (!File.exsits("replay/isOpen.config")) File.touch("replay/isOpen.config")
 
 world.events.blockPlace.subscribe((pl) => { if (replay.isOpen/* && Can_not_break_blocks.find((find) => { return "minecraft:" + find == pl.block.typeId }) == undefined*/) { var total = ""; const all = pl.block.permutation.getAllProperties(); all.forEach((each, index) => { total += (each.name + "->" + each.value + ((index < all.length - 1) ? ";" : "")) }); File.writeLine(`replay/place/${pl.player.name}.rep`, `${pl.block.location.x} ${pl.block.location.y} ${pl.block.location.z} ${pl.block.type.id} ${total}`) } })
 world.events.blockBreak.subscribe((pl) => { if (replay.isOpen/* && Can_not_break_blocks.find((find) => { return "minecraft:" + find == pl.brokenBlockPermutation.type.id }) == undefined*/) { var total = ""; const all = pl.brokenBlockPermutation.getAllProperties(); all.forEach((each, index) => { total += (each.name + "->" + each.value + ((index < all.length - 1) ? ";" : "")) }); File.writeLine(`replay/break/${pl.player.name}.rep`, `${pl.block.location.x} ${pl.block.location.y} ${pl.block.location.z} ${pl.brokenBlockPermutation.type.id} ${total}`) } })
@@ -19,6 +17,7 @@ var replay = {
             all.split('\n').forEach((each) => {
                 if (each == "") return
                 const pos = each.split(' ')
+                log(pos.toString())
                 overworld.getBlock(new mc.BlockLocation(int(pos[0]), int(pos[1]), int(pos[2]))).setType(mc.MinecraftBlockTypes.air)
                 count++
             })
@@ -42,8 +41,8 @@ var replay = {
             all.split('\n').forEach((each) => {
                 if (each == "") return
                 const pos = each.split(' ')
-                var permutation = mc.MinecraftBlockTypes[pos[3].substring(10) == "command_block" ? "commandBlock" : pos[3].substring(10)].createDefaultBlockPermutation()
-                if (pos[4].split(';') != 1) pos[4].split(';').forEach((each) => { permutation.getProperty(each.split('->')[0]).value = (each.split('->')[1] == "false" ? false : (each.split('->')[1] == "true" ? true : (int(each.split('->')[1]) != NaN ? int(each.split('->')[1]) : each.split('->')[1]))) })
+                var permutation = mc.MinecraftBlockTypes[((text_redirect[pos[3].substring(10)] == undefined) ? pos[3].substring(10) : text_redirect[pos[3].substring(10)])].createDefaultBlockPermutation()
+                if (pos[4].split(';').length != 1) pos[4].split(';').forEach((each) => { log(each.split('->')[0] + " : " + each.split('->')[1]); permutation.getProperty(each.split('->')[0]).value = (each.split('->')[1] == "false" ? false : (each.split('->')[1] == "true" ? true : (int(each.split('->')[1]) != NaN ? int(each.split('->')[1]) : each.split('->')[1]))) })
                 overworld.getBlock(new mc.BlockLocation(int(pos[0]), int(pos[1]), int(pos[2]))).trySetPermutation(permutation)
                 count++
             })
@@ -91,7 +90,7 @@ var replay = {
             const pos = each.split(' ')
             if (type == "place") {
                 var permutation = mc.MinecraftBlockTypes[pos[3].substring(10)].createDefaultBlockPermutation()
-                if (pos[4].split(';') != 1) pos[4].split(';').forEach((each) => { permutation.getProperty(each.split('->')[0]).value = each.split('->')[1] })
+                if (pos[4].split(';').length != 1) pos[4].split(';').forEach((each) => { permutation.getProperty(each.split('->')[0]).value = each.split('->')[1] })
                 overworld.getBlock(new mc.BlockLocation(int(pos[0]), int(pos[1]), int(pos[2]))).trySetPermutation(permutation)
             }
             else overworld.getBlock(new mc.BlockLocation(int(pos[0]), int(pos[1]), int(pos[2]))).setPermutation(mc.MinecraftBlockTypes.air.createDefaultBlockPermutation())
@@ -132,5 +131,4 @@ var replay = {
     isLogged: int(File.readFrom("replay/isLogged.config")) != 0,
     currentOrder: (!File.exsits("replay/Logger/currentOrder.config")) ? 0 : int(File.readFrom("replay/Logger/currentOrder.config"))
 }
-
 export { replay }
