@@ -1,7 +1,5 @@
-import { replay } from "./replayLib/replayLib"
-import { world, overworld, runCommand, log, mc, int } from "./DefineLib/DefineLib"
+import { world, overworld, runCommand, log, mc } from "./DefineLib/DefineLib"
 import { Can_not_break_blocks, Can_not_explode_blocks } from "./DefineLib/DefineLib"
-import { File } from "./FileLib/FileLib"
 import { BedWars } from "./BedWarsLib/BedWarsLib"
 world.events.beforeExplosion.subscribe((exp) => {
     exp.cancel = true

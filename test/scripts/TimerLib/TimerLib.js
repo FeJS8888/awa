@@ -1,3 +1,6 @@
+import { getScore, mc, world, runCommand } from "../DefineLib/DefineLib"
+import tick from "../server-plus/tick"
+
 tick.subscribe(() => {
     world.scoreboard.getObjective("Timer").getParticipants().forEach((each) => { if (getScore("Timer", each.displayName) <= 0) Timer.removeTimer(each.displayName) })
     if (mc.system.currentTick % 20 == 0) {
@@ -36,5 +39,7 @@ const Timer = {
 }
 if (!world.scoreboard.getObjective("Timer")) world.scoreboard.addObjective("Timer", "Timer")
 world.scoreboard.getObjective("Timer").getParticipants().forEach((each) => { Timer.removeTimer(each.displayName) })
+
+world
 
 export {Timer}

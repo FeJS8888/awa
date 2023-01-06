@@ -1,4 +1,4 @@
-import { Can_not_break_blocks, int, log, mc, overworld, text_redirect, world } from "../DefineLib/DefineLib";
+import { int, log, mc, overworld, text_redirect, world } from "../DefineLib/DefineLib";
 import { File } from "../FileLib/FileLib";
 
 world.events.blockPlace.subscribe((pl) => { if (replay.isOpen/* && Can_not_break_blocks.find((find) => { return "minecraft:" + find == pl.block.typeId }) == undefined*/) { var total = ""; const all = pl.block.permutation.getAllProperties(); all.forEach((each, index) => { total += (each.name + "->" + each.value + ((index < all.length - 1) ? ";" : "")) }); File.writeLine(`replay/place/${pl.player.name}.rep`, `${pl.block.location.x} ${pl.block.location.y} ${pl.block.location.z} ${pl.block.type.id} ${total}`) } })
