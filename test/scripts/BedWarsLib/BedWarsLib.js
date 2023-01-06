@@ -1,4 +1,5 @@
-import { log, mc, int, overworld, runCommand, world, getScore, color_format2, text_format, Timer } from "../DefineLib/DefineLib"
+import { log, mc, int, overworld, runCommand, world, getScore, color_format2, text_format } from "../DefineLib/DefineLib"
+import { Timer } from "../TimerLib/TimerLib"
 import { File } from "../FileLib/FileLib"
 import tick from "../server-plus/tick"
 import * as gt from "@minecraft/server-gametest"
@@ -15,7 +16,7 @@ var BedWars = {
             return
         }
         const pos = posstr.split(' ')
-        if(Timer.getRest("Begin") <= 15){
+        if (Timer.getRest("BeginTime") <= 15) {
             who.teleport(new mc.Vector(int(pos[0]) + 0.5, int(pos[1]), int(pos[2]) + 0.5), overworld, 0, 90)
             who.tell("§2游戏已开始,您将观战")
             who.runCommandAsync(`gamemode spectator @s`)
@@ -27,16 +28,17 @@ var BedWars = {
         const nowPersons = world.scoreboard.getObjective("BedWars").getParticipants().find((find) => { return find.displayName == "Count" }) == undefined ? 0 : world.scoreboard.getObjective("BedWars").getScore(world.scoreboard.getObjective("BedWars").getParticipants().find((find) => { return find.displayName == "Count" }))
         runCommand(`scoreboard players set "Count" BedWars ${nowPersons + 1}`)
         File.writeLine("BedWars/Starting/1-1.map", who.name, false)
-        File.readFrom("BedWars/Starting/1-1.map").split('\n').forEach((name) =>{
-            const player = Array.from(world.getPlayers({"name":name}))[0]
-            if(player == undefined) return
+        File.readFrom("BedWars/Starting/1-1.map").split('\n').forEach((name) => {
+            const player = Array.from(world.getPlayers({ "name": name }))[0]
+            if (player == undefined) return
             player.tell(who.name + `加入了游戏(${File.readFrom("BedWars/Starting/1-1.map").split('\n').length}/16)`)
         })
-        if(File.readFrom("BedWars/Starting/1-1.map").split('\n').length == 2) Timer.addTimer("BeginTime",30)
-        if(File.readFrom("BedWars/Starting/1-1.map").split('\n').length == 4 && Timer.getRest("BeginTime") >= 10) Timer.addTimer("BeginTime",10)
+        if (File.readFrom("BedWars/Starting/1-1.map").split('\n').length == 2) Timer.addTimer("BeginTime", 30)
+        if (File.readFrom("BedWars/Starting/1-1.map").split('\n').length == 4 && Timer.getRest("BeginTime") >= 10) Timer.addTimer("BeginTime", 10, () => { log("OK") })
     },
-    FinishMap(){
-
+    FinishMap() {
+        Timer.addTimer("BeginTime", 2147483647, () => { log("OUT") })
+        File.delete("BedWars/Starting/1-1.map")
     },
     /**
      * 
@@ -67,7 +69,7 @@ var BedWars = {
      * @param {string} who 
      */
     hub(who) {
-        File.filter("BedWars/Starting/1-1.map",who)
+        File.filter("BedWars/Starting/1-1.map", who)
         const pos = File.readFrom("BedWars/lobby/location.pos").split(' ')
         const x = getScore("tp_x", who) != undefined ? getScore("tp_x", who) : int(pos[0])
         const y = getScore("tp_y", who) != undefined ? getScore("tp_y", who) : int(pos[1])
@@ -89,6 +91,19 @@ tick.subscribe(() => {
 })
 if (!world.scoreboard.getObjective("BedWars")) world.scoreboard.addObjective("BedWars", "BedWars")
 if (!world.scoreboard.getObjective("KillCount")) world.scoreboard.addObjective("KillCount", "KillCount")
+
+world.events.beforeChat.subscribe((chat) => {
+    if (chat.message.startsWith("bedwars.")) {
+        chat.cancel = true
+        const op = chat.message.substring(8)
+        if (op == "init") BedWars.init(chat.sender.location)
+        else if (op == "inithub") BedWars.inithub(chat.sender.location)
+        else if (op == "hub") BedWars.hub(chat.sender.name)
+        else if (op == "Preload") BedWars.Preload()
+        else if (op.startsWith("addPreloadCmd->")) BedWars.addPreloadCmd(op.substring(15))
+        else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")
+    }
+})
 
 ///// 击杀资源转移 /////
 /**
@@ -146,11 +161,13 @@ world.events.entityHurt.subscribe((hurt) => {
 tick.subscribe(() => {
     Array.from(world.getPlayers()).forEach((player) => { player.nameTag = player.name + '\n当前血量 : §4' + player.getComponent("minecraft:health").current.toFixed().toString() })
 })
-for (var i in world.events) log(i)
+
+///// 回城 /////
 world.events.playerSpawn.subscribe((spwan) => {
     if (spwan.initialSpawn) BedWars.hub(spwan.player.name)
 })
 
+///// 传送牌 /////
 world.events.itemUseOn.subscribe((use) => {
     if ([[1, 3, -1], [1, 3, -2]].find((find) => { return find[0] == use.blockLocation.x && find[1] == use.blockLocation.y && find[2] == use.blockLocation.z }) != undefined) BedWars.JoinMap(use.source)
 })
@@ -165,4 +182,7 @@ world.events.entityHit.subscribe((hit) => {
 gt.register("Test", "test", (test) => {
     test.spawnSimulatedPlayer(new mc.BlockLocation(0, -50, 0), "Test", mc.GameMode.creative)
 }).maxTicks(2147483647)
+
 export { BedWars }
+
+BedWars.FinishMap()

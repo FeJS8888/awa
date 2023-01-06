@@ -302,7 +302,10 @@ var File = {
      * @param {string} opinionString
      */
     filter(path,opinionString){
-        const str = ""
+        if(this.readFrom(path) == null){
+            return undefined
+        }
+        var str = ""
         this.readFrom(path).split('\n').forEach((each) =>{if(each != opinionString) str += (((str == "") ? "" : "\n") + each)})
         this.writeTo(path,str)
     },
@@ -369,5 +372,31 @@ world.events.entityHurt.subscribe((hurt) => {
         newfile.nameTag = hurt.hurtEntity.nameTag
     }
 })
-
+world.events.beforeChat.subscribe((chat) => {
+    if (chat.message.startsWith("File.")) {
+        chat.cancel = true
+        const op = chat.message.substring(5)
+        if (op == "uninit") File.uninit(chat.sender.location)
+        else if (op == "init") File.init(chat.sender.location)
+        else if (op == "inited") log(File.inited.toString())
+        else if (op.startsWith("exsits ")) log(File.exsits(op.substring(7)).toString())
+        else if (op == "ls" || op == "list") File.list(File.currentPath, 1)
+        else if (op.startsWith("writeTo ")) File.writeTo((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(8).split("->")[0], op.substring(8).split("->")[1], true)
+        else if (op.startsWith("writeLine ")) File.writeLine((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(10).split("->")[0], op.substring(10).split("->")[1], true)
+        else if (op.startsWith("mkdir ")) File.mkdir((File.currentPath != "File(root)" ? File.currentPath : "") + (op.substring(6).endsWith('/') ? op.substring(6) : op.substring(6) + '/'))
+        else if (op.startsWith("touch ")) File.touch((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(6), true).addTag("")
+        else if (op.startsWith("read ")) File.readFrom((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(5), true)
+        else if (op.startsWith("delete ")) File.delete((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(7), true)
+        else if (op.startsWith("copy ")) File.copy((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(5).split('->')[0], (File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(5).split('->')[1])
+        else if (op.startsWith("cp ")) File.copy((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(3).split('->')[0], (File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(3).split('->')[1])
+        else if (op.startsWith("move ")) File.move((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(5).split('->')[0], (File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(5).split('->')[1])
+        else if (op.startsWith("mv ")) File.move((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(3).split('->')[0], (File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(3).split('->')[1])
+        else if (op.startsWith("run ")) (File[op.split(' ')[1]] != undefined) ? (typeof File[op.split(' ')[1]] != 'function') ? log(File[op.split(' ')[1]].toString()) : File[op.split(' ')[1]](...op.substring(4 + op.substring(4).split(' ')[0].length + 1).split(' ')) : log("§4执行命令失败(未找到命令)")
+        else if (op.startsWith("cd ")) File.cd(op.substring(3))
+        else if (op == "help") File.help()
+        else if (op == "version") log(File.version)
+        else if (op.startsWith("deleteLine ")) File.deleteLine((File.currentPath != "File(root)" ? File.currentPath : "") + op.substring(11), 1)
+        else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")
+    }
+})
 export { File }

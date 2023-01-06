@@ -139,39 +139,9 @@ const int = parseInt
 function getScore(Obj, Name) {
     return world.scoreboard.getObjective(Obj) == undefined ? undefined : world.scoreboard.getObjective(Obj).getParticipants().find((find) => { return find.displayName == Name }) == undefined ? undefined : world.scoreboard.getObjective(Obj).getScore(world.scoreboard.getObjective(Obj).getParticipants().find((find) => { return find.displayName == Name }))
 }
-const Timer = {
-    /**
-    * 
-    * @param {string} displayName 
-    * @param {number} time 
-    */
-    addTimer(displayName, time) {
-        runCommand(`scoreboard players set "${displayName}" Timer ${time}`)
-    },
-    /**
-    * 
-    * @param {string} displayName 
-    */
-    getRest(displayName) {
-        return ((getScore("Timer", displayName) == undefined) ? 0 : getScore("Timer", displayName))
-    },
-    /**
-    * 
-    * @param {string} displayName 
-    */
-    removeTimer(displayName) {
-        runCommand(`scoreboard players reset "${displayName}" Timer`)
-    }
-}
 
-if (!world.scoreboard.getObjective("Timer")) world.scoreboard.addObjective("Timer", "Timer")
 
 world.events.itemUseOn.subscribe((on) => { if (on.item.typeId == "minecraft:stick" && on.item.data == 32767) overworld.getBlock(on.blockLocation).setType(mc.MinecraftBlockTypes.air) })
-tick.subscribe(() => {
-    world.scoreboard.getObjective("Timer").getParticipants().forEach((each) => { if (getScore("Timer", each.displayName) <= 0) Timer.removeTimer(each.displayName) })
-    if (mc.system.currentTick % 20 == 0) {
-        world.scoreboard.getObjective("Timer").getParticipants().forEach((each) => { runCommand(`scoreboard players remove "${each.displayName}" Timer 1`) })
-    }
-})
 
-export { dx, dy, dz, Can_not_break_blocks, Can_not_explode_blocks, int, getScore, mc, world, overworld, runCommand, log, toLocation, color_format, color_format2, text_format, text_redirect, Timer }
+
+export { dx, dy, dz, Can_not_break_blocks, Can_not_explode_blocks, int, getScore, mc, world, overworld, runCommand, log, toLocation, color_format, color_format2, text_format, text_redirect }

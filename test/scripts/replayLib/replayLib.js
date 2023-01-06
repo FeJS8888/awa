@@ -131,4 +131,20 @@ var replay = {
     isLogged: int(File.readFrom("replay/isLogged.config")) != 0,
     currentOrder: (!File.exsits("replay/Logger/currentOrder.config")) ? 0 : int(File.readFrom("replay/Logger/currentOrder.config"))
 }
+
+world.events.beforeChat.subscribe((chat) => {
+    if (chat.message.startsWith("replay.")) {
+        chat.cancel = true
+        const op = chat.message.substring(7)
+        if (op.startsWith("break ")) replay.replayBreak(op.substring(6))
+        else if (op.startsWith("place ")) replay.replayPlace(op.substring(6))
+        else if (op.startsWith("cancel ")) replay.cancel(int(op.substring(7)))
+        else if (op.startsWith("run ")) replay[op.split(' ')[1]] != undefined ? (typeof replay[op.split(' ')[1]] != 'function') ? log(replay[op.split(' ')[1]].toString()) : replay[op.split(' ')[1]](...op.substring(4 + op.substring(4).split(' ')[0].length + 1).split(' ')) : log("§4执行命令失败(未找到命令)")
+        else if (op == "open") replay.replayOpen()
+        else if (op == "close") replay.replayClose()
+        else if (op == "help") replay.help()
+        else log("错误的参数>>§4" + op.split(' ')[0] + "§r<<")
+    }
+})
+
 export { replay }
