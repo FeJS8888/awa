@@ -17,7 +17,6 @@ var replay = {
             all.split('\n').forEach((each) => {
                 if (each == "") return
                 const pos = each.split(' ')
-                log(pos.toString())
                 overworld.getBlock(new mc.BlockLocation(int(pos[0]), int(pos[1]), int(pos[2]))).setType(mc.MinecraftBlockTypes.air)
                 count++
             })

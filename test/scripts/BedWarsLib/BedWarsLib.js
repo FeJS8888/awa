@@ -3,6 +3,7 @@ import { Timer } from "../TimerLib/TimerLib"
 import { File } from "../FileLib/FileLib"
 import tick from "../server-plus/tick"
 import * as gt from "@minecraft/server-gametest"
+import { replay } from "../replayLib/replayLib"
 
 var BedWars = {
     /**
@@ -10,13 +11,16 @@ var BedWars = {
     * @param {mc.Player} who 
     */
     JoinMap(who) {
+        if (who.hasTag("Joining")) return
         const posstr = File.readFrom("BedWars/MapLocs/1-1.map", false)
         if (posstr == undefined) {
             who.tell("No Map")
             return
         }
+        who.addTag("Joining")
+        Timer.addTimer(who.name, 1, () => { who.removeTag("Joining") })
         const pos = posstr.split(' ')
-        if (Timer.getRest("BeginTime") <= 15) {
+        if (Timer.getRest("BeginTime") <= 10) {
             who.teleport(new mc.Vector(int(pos[0]) + 0.5, int(pos[1]), int(pos[2]) + 0.5), overworld, 0, 90)
             who.tell("§2游戏已开始,您将观战")
             who.runCommandAsync(`gamemode spectator @s`)
@@ -34,11 +38,12 @@ var BedWars = {
             player.tell(who.name + `加入了游戏(${File.readFrom("BedWars/Starting/1-1.map").split('\n').length}/16)`)
         })
         if (File.readFrom("BedWars/Starting/1-1.map").split('\n').length == 2) Timer.addTimer("BeginTime", 30)
-        if (File.readFrom("BedWars/Starting/1-1.map").split('\n').length == 4 && Timer.getRest("BeginTime") >= 10) Timer.addTimer("BeginTime", 10, () => { log("OK") })
+        if (File.readFrom("BedWars/Starting/1-1.map").split('\n').length == 4 && Timer.getRest("BeginTime") >= 10) Timer.addTimer("BeginTime", 10, () => { log("§l游戏已开始") })
     },
     FinishMap() {
         Timer.addTimer("BeginTime", 2147483647, () => { log("OUT") })
         File.delete("BedWars/Starting/1-1.map")
+        Array.from(world.getPlayers()).forEach((each) => { replay.replayPlace(each.name) })
     },
     /**
      * 
@@ -75,7 +80,14 @@ var BedWars = {
         const y = getScore("tp_y", who) != undefined ? getScore("tp_y", who) : int(pos[1])
         const z = getScore("tp_z", who) != undefined ? getScore("tp_z", who) : int(pos[2])
         const player = Array.from(world.getPlayers({ "name": who }))[0]
+        File.filter("BedWars/Starting/1-1.map", who)
+        if (File.readFrom("BedWars/Starting/1-1.map") == "") this.FinishMap()
+        else if (File.readFrom("BedWars/Starting/1-1.map").split('\n').length == 1) {
+            log("§l§4人数不足,已停止倒计时")
+            this.FinishMap()
+        }
         player.runCommandAsync(`gamemode 0 @s`)
+        player.runCommandAsync(`replaceitem entity @s slot.hotbar 0 compass 1`)
         player.teleport(new mc.Vector(x, y, z), overworld, 0, 90)
         player.nameTag = player.name
     }
@@ -88,6 +100,9 @@ tick.subscribe(() => {
             File.touch(`players/${each.name}.txt`)
         }
     })
+    if (mc.system.currentTick % 20 != 0) return
+    if (Timer.getRest("BeginTime") == -114514) return
+    if (Timer.getRest("BeginTime") <= 6 && Timer.getRest("BeginTime") != 1) log("§l游戏将在§e" + (Timer.getRest("BeginTime") - 1).toString() + "§r§l秒后开始")
 })
 if (!world.scoreboard.getObjective("BedWars")) world.scoreboard.addObjective("BedWars", "BedWars")
 if (!world.scoreboard.getObjective("KillCount")) world.scoreboard.addObjective("KillCount", "KillCount")
@@ -128,7 +143,6 @@ function ResourceMove(from, to) {
     // if (all["minecraft:emerald"] != undefined) to.getComponent("minecraft:inventory").container.addItem(new mc.ItemStack(mc.MinecraftItemTypes.emerald, all["minecraft:emerald"]))
     // if (all["minecraft:diamond"] != undefined) to.getComponent("minecraft:inventory").container.addItem(new mc.ItemStack(mc.MinecraftItemTypes.diamond, all["minecraft:diamond"]))
 }
-
 world.events.entityHurt.subscribe((hurt) => {
     if (hurt.hurtEntity.getComponent('minecraft:health').current > 0) {
         if (hurt.damagingEntity == undefined) return
@@ -186,3 +200,25 @@ gt.register("Test", "test", (test) => {
 export { BedWars }
 
 BedWars.FinishMap()
+
+["bedwars.addPreloadCmd->structure load team1 1000 1 1039 180_degrees",
+    "bedwars.addPreloadCmd->structure load team1 961 1 1000 270_degrees",
+    "bedwars.addPreloadCmd->structure load team1 1000 1 961 0_degrees",
+    "bedwars.addPreloadCmd->structure load team1 1039 1 1000 90_degrees",
+    "bedwars.addPreloadCmd->structure load center1 1000 0 1000 0_degrees",
+    "bedwars.addPreloadCmd->structure load diamondisland1 963 16 1067 90_degrees",
+    "bedwars.addPreloadCmd->structure load diamondisland1 1067 16 963 270_degrees",
+    "bedwars.addPreloadCmd->structure load diamondisland1 963 16 963 180_degrees",
+    "bedwars.addPreloadCmd->structure load diamondisland1 1067 16 1067 0_degrees",
+    "bedwars.addPreloadCmd->structure load villager_items_1 1031 24 968 0_degrees",
+    "bedwars.addPreloadCmd->structure load villager_items_1 1078 24 1031 0_degrees",
+    "bedwars.addPreloadCmd->structure load villager_items_1 1015 24 1078 0_degrees",
+    "bedwars.addPreloadCmd->structure load villager_items_1 968 24 1015 0_degrees",
+    "bedwars.addPreloadCmd->structure load villager_items_2 1031 24 968 0_degrees",
+    "bedwars.addPreloadCmd->structure load villager_items_2 1078 24 1031 0_degrees",
+    "bedwars.addPreloadCmd->structure load villager_items_2 1015 24 1078 0_degrees",
+    "bedwars.addPreloadCmd->structure load villager_items_2 968 24 1015 0_degrees",
+    "bedwars.addPreloadCmd->structure load villager_upgrades 968 24 1031 0_degrees",
+    "bedwars.addPreloadCmd->structure load villager_upgrades 1015 24 968 0_degrees",
+    "bedwars.addPreloadCmd->structure load villager_upgrades 1078 24 1015 0_degrees",
+    "bedwars.addPreloadCmd->structure load villager_upgrades 1031 24 1078 0_degrees"].forEach((cmd) => { BedWars.addPreloadCmd(cmd) })

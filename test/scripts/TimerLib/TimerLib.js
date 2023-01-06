@@ -1,4 +1,4 @@
-import { getScore, mc, world, runCommand } from "../DefineLib/DefineLib"
+import { getScore, mc, world, runCommand, int, log } from "../DefineLib/DefineLib"
 import tick from "../server-plus/tick"
 
 tick.subscribe(() => {
@@ -24,7 +24,7 @@ const Timer = {
     * @param {string} displayName 
     */
     getRest(displayName) {
-        return ((getScore("Timer", displayName) == undefined) ? 0 : getScore("Timer", displayName))
+        return ((getScore("Timer", displayName) == undefined) ? -114514 : getScore("Timer", displayName))
     },
     /**
     * 
@@ -32,7 +32,7 @@ const Timer = {
     */
     removeTimer(displayName) {
         runCommand(`scoreboard players reset "${displayName}" Timer`)
-        if(this.functions[displayName] == undefined) return
+        if (this.functions[displayName] == undefined) return
         this.functions[displayName]()
         delete this.functions[displayName]
     }
@@ -40,6 +40,11 @@ const Timer = {
 if (!world.scoreboard.getObjective("Timer")) world.scoreboard.addObjective("Timer", "Timer")
 world.scoreboard.getObjective("Timer").getParticipants().forEach((each) => { Timer.removeTimer(each.displayName) })
 
-world
-
-export {Timer}
+world.events.beforeChat.subscribe((chat) => {
+    if (chat.message.startsWith("Timer.")) {
+        chat.cancel = true
+        const op = chat.message.substring(6)
+        if (op.startsWith("add ")) Timer.addTimer(op.split(' ')[1], int(op.split(' ')[2]), function () { runCommand(`${op.substring(op.split(' ')[0].length + op.split(' ')[1].length + op.split(' ')[2].length + 3)}`)})
+    }
+})
+export { Timer }

@@ -1,6 +1,7 @@
 import { world, overworld, runCommand, log, mc } from "./DefineLib/DefineLib"
 import { Can_not_break_blocks, Can_not_explode_blocks } from "./DefineLib/DefineLib"
 import { BedWars } from "./BedWarsLib/BedWarsLib"
+import { replay } from "./replayLib/replayLib"
 world.events.beforeExplosion.subscribe((exp) => {
     exp.cancel = true
     // var queue = []
