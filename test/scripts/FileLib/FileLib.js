@@ -250,7 +250,31 @@ var File = {
         str = str == undefined ? "" : str
         if (isLogged) log(`§e=========§r §2${path} §e=========§r\n` + str + `\n§e=========§r §1EOF§r §e=========§r`)
         return str
-    },
+    },/**
+    * 
+    * @param {string} path 
+    * @param {number} Lines
+    * @param {boolean | undefined} isLogged
+    */
+   readFrom_Lines(path,Lines, isLogged) {
+       isLogged = isLogged == undefined ? false : isLogged
+       isLogged = true
+       if (Array.from(overworld.getEntities({ "type": "file:file", "name": path }))[0] == undefined) {
+           if (isLogged) log("§4未找到该文件")
+           return null
+       }
+       var str = Array.from(overworld.getEntities({ "type": "file:file", "name": path }))[0].getTags().find((find) => { return find != "protected" })
+       str = str == undefined ? "" : str
+       var tot = ""
+       var isFirst = true
+       for(var i = 0;i < Lines;++ i) {
+        if(!isFirst) tot += '\n'
+        else isFirst = false
+        tot += str.split('\n')[i]
+       }
+       if (isLogged) log(`§e=========§r §2${path} §e=========§r\n` + tot + `\n§e=========§r §1EOF§r §e=========§r`)
+       return str
+   },
     /**
      * 
      * @param {string} path 

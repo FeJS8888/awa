@@ -15,6 +15,7 @@
             0
         ]
     },
+    "capabilities": ["script_eval"],
     "modules": [
         {
             "type": "script",

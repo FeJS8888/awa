@@ -3,6 +3,7 @@ import { Can_not_break_blocks, Can_explode_blocks } from "./DefineLib/DefineLib"
 import { BedWars } from "./BedWarsLib/BedWarsLib"
 import { replay } from "./replayLib/replayLib"
 import tick from "./server-plus/tick"
+import { RunCode } from "./RunLib/RunLib"
 world.events.before
 world.events.beforeExplosion.subscribe((exp) => {
     if(exp.source == undefined) return
