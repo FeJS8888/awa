@@ -13,7 +13,7 @@ const Timer = {
     * 
     * @param {string} displayName 
     * @param {number} time 
-    * @param {Function} then
+    * @param {Function | undefined} then
     */
     addTimer(displayName, time, then) {
         runCommand(`scoreboard players set "${displayName}" Timer ${time}`)

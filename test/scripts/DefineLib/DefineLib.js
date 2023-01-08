@@ -28,10 +28,15 @@ const dx = [1, -1, 0, 0, 0, 0]
 const dy = [0, 0, 1, -1, 0, 0]
 const dz = [0, 0, 0, 0, 1, -1]
 const Can_not_break_blocks = [
+    "cobblestone_wall",
+    "end_bricks",
+    "ender_chest",
+    "chest",
     "stone",
     "cobblestone",
     "stone_block_slab",
     "stone_block_slab2",
+    "double_stone_block_slab2",
     "stone_block_slab3",
     "stone_block_slab4",
     "stone_brick",
@@ -68,50 +73,10 @@ const Can_not_break_blocks = [
     "double_stone_block_slab",
     "tuff"
 ]
-const Can_not_explode_blocks = {
-    "stone": 0,
-    "cobblestone": 0,
-    "stone_block_slab": 0,
-    "stone_block_slab2": 0,
-    "stone_block_slab3": 0,
-    "stone_block_slab4": 0,
-    "stone_brick": 0,
-    "messy_stone_brick": 0,
-    "messy_cobblestone": 0,
-    "grass": 0,
-    "dirt": 0,
-    "glass_pane": 0,
-    "concrete": 0,
-    "fence": 0,
-    "wood": 0,
-    "leaves": 0,
-    "leaves2": 0,
-    "planks_slab": 0,
-    "spruce_stairs": 0,
-    "yellow_flower": 0,
-    "red_flower": 0,
-    "diamond_block": 0,
-    "cobblesstone_wall": 0,
-    "stone_block_slab2": 0,
-    "polished_diorite_stairs": 0,
-    "sea_lantern": 0,
-    "red_sandstone": 0,
-    "dried_kelp_block": 0,
-    "tallgrass": 0,
-    "bamboo": 0,
-    "mud_bricks": 0,
-    "brick_block": 0,
-    "stone_brick_stairs": 0,
-    "emerald_block": 0,
-    "stonebrick": 0,
-    "glowstone": 0,
-    "stained_glass_pane": 0,
-    "bed": 0,
-    "bedrock": 0,
-    "barrier": 0,
-    "double_stone_block_slab": 0,
-    "tuff": 0,
-    "glass": 0
+const Can_explode_blocks = {
+    "endstone":0,
+    "wool":0,
+    "planks":0
 }
 const color_format = {
     "blue": "§1",
@@ -135,13 +100,32 @@ const text_redirect = {
     "command_block": "commandBlock",
     "wooden_button": "woodenButton"
 }
+const bed_order_to_color = {
+    "1":"§4红",
+    "2":"§2绿",
+    "3":"§1蓝",
+    "0":"§e黄"
+}
 const int = parseInt
 function getScore(Obj, Name) {
     return world.scoreboard.getObjective(Obj) == undefined ? undefined : world.scoreboard.getObjective(Obj).getParticipants().find((find) => { return find.displayName == Name }) == undefined ? undefined : world.scoreboard.getObjective(Obj).getScore(world.scoreboard.getObjective(Obj).getParticipants().find((find) => { return find.displayName == Name }))
 }
+const bed_location = { "3": "977 24 1023", "0": "1023 24 977", "1": "1069 24 1023", "2": "1023 24 1069" }
+const bed_location_reserve = { "977 24 1023": "3", "1023 24 977": "0", "1069 24 1023": "1", "1023 24 1069": "2" }
+const bed_location_reserve2 = { "976 24 1023": "3", "1023 24 976": "0", "1070 24 1023": "1", "1023 24 1070": "2" }
+const bear_location = { "3": ["967 24 1023", 270], "0": ["1023 24 967", 0], "1": ["1079 24 1023", 90], "2": ["1023 24 1079", 180] }
 
 
 world.events.itemUseOn.subscribe((on) => { if (on.item.typeId == "minecraft:stick" && on.item.data == 32767) overworld.getBlock(on.blockLocation).setType(mc.MinecraftBlockTypes.air) })
 
 
-export { dx, dy, dz, Can_not_break_blocks, Can_not_explode_blocks, int, getScore, mc, world, overworld, runCommand, log, toLocation, color_format, color_format2, text_format, text_redirect }
+export {
+    dx, dy, dz,
+    Can_not_break_blocks, Can_explode_blocks,
+    int, getScore,
+    mc, world, overworld, runCommand, log,
+    toLocation,
+    color_format, color_format2,bed_order_to_color,
+    text_format, text_redirect,
+    bed_location, bear_location, bed_location_reserve, bed_location_reserve2
+}
